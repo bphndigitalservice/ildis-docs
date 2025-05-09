@@ -2,3 +2,48 @@
 title: Struktur Direktori
 description: Struktur Direktori
 ---
+import { FileTree } from '@astrojs/starlight/components';
+
+Struktur direktori pada aplikasi ILDIS adalah tipikal struktur direktori aplikasi dengan basis [Yii2 Advanced Template](https://github.com/yiisoft/yii2-app-advanced) atau [Yii 2 Practical-A Project Template](https://github.com/kartik-v/yii2-app-practical-a). Anda dapat melakukan penyesuaian sesuai dengan kebutuhan pengembangan anda.
+
+Adapun struktur direktori pada ILDIS adalah sebagai berikut :
+
+<FileTree>
+- ildis
+    - assets/ berisi generated runtime web assets
+    - common
+        - config/ berisi shared configurations
+        - mail/ berisi view files untuk e-mails
+        - models/ berisi shared model classes
+        - tests/ berisi tests for common classes
+    - console
+        - config/ berisi console configurations
+        - controllers/ berisi console controllers (commands)
+        - migrations/ berisi database migrations
+        - models/ berisi console-specific model classes
+        - runtime/ berisi files generated saat runtime
+    - backend
+        - assets/  berisi generated runtime web assets
+        - assets_b/ berisi web assets untuk backend
+        - config/ contains backend configurations
+        - controllers/ contains Web controller classes
+        - models/ contains backend-specific model classes
+        - runtime/ contains files generated during runtime
+        - tests/ contains tests for backend application
+        - views/ contains view files for the Web application
+        - web/  contains the entry script and Web resources
+    - frontend
+        - assets/  berisi generated runtime web assets
+        - config/ berisi frontend configurations
+        - controllers/ berisi Web controller classes
+        - models/ berisi frontend-specific model classes
+        - runtime/ berisi files generated during runtime
+        - tests/ berisi tests for frontend application
+        - views/ berisi view files untuk frontend
+        - widgets/ berisi widget classes
+    - vendor/ berisi dependensi yang diinstal oleh composer
+    - environments/ berisi konfigurasi environment
+
+</FileTree>
+
+Struktur seperti ini memungkinkan metode praktis untuk mengakses frontend langsung dari root aplikasi dan cara yang lebih sederhana untuk mengakses backend. Namun jika anda ingin memisahkan _entrypoint_ aplikasi dari _root_ aplikasi anda dapat melihat referensi [Yii2 Advanced Template](https://github.com/yiisoft/yii2-app-advanced) yang mana perubahan yang dilakukan tidak akan begitu banyak.
