@@ -1,0 +1,62 @@
+---
+title: Persyaratan Sistem
+description: Persyaratan Sistem
+---
+
+Untuk menjalankan ILDIS, berikut adalah kebutuhan minimum server yang harus dipenuhi:
+
+---
+
+## PHP
+
+- PHP **7.4** (direkomendasikan)
+- Minimum PHP **5.6** (sesuai kebutuhan Yii2)
+- Mendukung hingga PHP **8.1**
+
+### PHP Extensions yang diperlukan:
+- `cli`
+- `common`
+- `curl`
+- `mbstring`
+- `intl`
+- `mysql`
+- `xml`
+- `fpm`
+- `gd`
+- `zip`
+- `xdebug` *(opsional, hanya untuk kebutuhan development/debugging)*
+
+---
+
+## Web Server
+
+- **NGINX** atau **Apache**
+
+
+
+---
+
+## Database
+
+- **MySQL** atau **MariaDB**
+
+---
+
+## Lain-lain
+
+- **Composer** (untuk instalasi dependensi PHP)
+- `unzip`
+- `software-properties-common` (untuk mengelola PPA di sistem berbasis Ubuntu/Debian)
+
+---
+
+## Rekomendasi Sistem Operasi
+
+- Ubuntu 18.04 atau lebih baru
+- Debian 10 atau lebih baru
+
+---
+
+## Catatan
+
+ILDIS dibangun menggunakan **Yii2 Framework** dan **Kartik Practical-A Template**. Aplikasi ini dirancang untuk dapat dijalankan secara *self-hosted*, sehingga instansi memiliki kendali penuh atas data dan infrastruktur yang digunakan.
