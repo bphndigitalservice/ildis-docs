@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ildis.bphn.go.id/sitemap-index.xml
