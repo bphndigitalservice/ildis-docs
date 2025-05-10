@@ -11,6 +11,18 @@ export default defineConfig({
     integrations: [
         starlight({
                 title: 'ILDIS v4',
+                favicon: '/images/favicon.ico',
+                head: [
+                    // Add ICO favicon fallback for Safari.
+                    {
+                        tag: 'link',
+                        attrs: {
+                            rel: 'icon',
+                            href: '/images/favicon.ico',
+                            sizes: '32x32',
+                        },
+                    },
+                ],
                 social: [{icon: 'github', label: 'GitHub', href: 'https://github.com/bphndigitalservice/ildis'}],
                 credits: true,
                 description: 'Panduan resmi instalasi dan penggunaan Sistem Informasi Dokumentasi Hukum Indonesia (ILDIS)',
@@ -52,6 +64,10 @@ export default defineConfig({
                     {
                         label: 'Kontribusi',
                         link: '/kontribusi',
+                    },
+                    {
+                        label: 'Aplikasi Alternative ',
+                        link: '/alternative',
                     }
                 ],
                 expressiveCode: {

@@ -1,9 +1,10 @@
 ---
-title: Instalasi
-description: Instalasi
+title: Instalasi ILDIS
+description: Instalasi ILDIS
 ---
 import {Aside} from '@astrojs/starlight/components';
 import {Code} from '@astrojs/starlight/components';
+import {Tabs, TabItem} from '@astrojs/starlight/components';
 
 <Aside type="caution">
     Pastikan pada perangkat anda telah terpasang [Git](https://git-scm.com/downloads), PHP, dan
@@ -14,19 +15,24 @@ Pada bagian ini kita akan melakukan instalasi ILDIS pada perangkat anda dengan m
 
 
 ## Unduh ILDIS
+
+### Git Clone
 Untuk mengunduh ILDIS anda dapat melakukan clone repositori ildis menggunakan perintah berikut :
 
 export const cloneCommand = `git clone https://github.com/bphndigitalservice/ildis.git`;
 
 <Code code={cloneCommand} lang="shell"/>
 
-atau dapat dilakukan dengan mengunduh rilis terakhir ILDIS pada website <a href="https://github.com/bphndigitalservice/ildis/releases" target="_blank">di sini</a>
-
-
+### Ekstrak Manual
+Anda juga dapat mengunduh rilis terakhir ILDIS pada website <a href="https://github.com/bphndigitalservice/ildis/releases" target="_blank">di sini</a>
 
 
 ## Vagrant
 
 Instalasi ILDIS dengan menggunakan vagrant adalah cara yang paling mudah dan cepat. Namun sebelum itu pastikan terlebih dahulu bahwa pada perangkat anda telah terpasang [Vagrant](https://developer.hashicorp.com/vagrant/install) dan [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
+
+export const vagrantUp = `vagrant up`;
+
+<Code code={vagrantUp} lang="shell"/>
 
 
