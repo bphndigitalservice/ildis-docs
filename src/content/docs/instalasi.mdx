@@ -5,13 +5,17 @@ description: Instalasi ILDIS
 import {Aside} from '@astrojs/starlight/components';
 import {Code} from '@astrojs/starlight/components';
 import {Tabs, TabItem} from '@astrojs/starlight/components';
+import configExample from 'config_example/env?raw';
+import configCookie from 'config_example/env_cookie_validation_key?raw';
+import databaseConfiguration from 'config_example/env_database?raw';
+import nginx from 'config_example/nginx?raw';
+import apache from 'config_example/apache?raw';
 
-<Aside type="caution">
+
+<Aside type="tip">
     Pastikan pada perangkat anda telah terpasang [Git](https://git-scm.com/downloads), PHP, dan
     [Composer](https://getcomposer.org/download/). Lihat [Persyaratan Sistem](/persyaratan-sistem)
 </Aside>
-
-Pada bagian ini kita akan melakukan instalasi ILDIS pada perangkat anda dengan menggunakan Vagrant, Manual Instalasi, atau dengan Docker.
 
 
 ## Unduh ILDIS
@@ -26,13 +30,241 @@ export const cloneCommand = `git clone https://github.com/bphndigitalservice/ild
 ### Ekstrak Manual
 Anda juga dapat mengunduh rilis terakhir ILDIS pada website <a href="https://github.com/bphndigitalservice/ildis/releases" target="_blank">di sini</a>
 
+<br/>
+<br/>
+---
 
 ## Vagrant
+ILDIS dapat dipasang pada berbagai macam sistem operasi seperti Linux, Windows, atau macOS. Pada tahap development kami menyarankan anda untuk menggunakan Vagrant.
+
+<Aside type="caution">
+    Vagrant adalah alat yang sangat berguna untuk _development_, tetapi tidak disarankan untuk digunakan dalam _production_. Alat lain seperti Terraform dan platform cloud lebih cocok untuk lingkungan produksi yang membutuhkan skalabilitas, kontrol yang lebih ketat, dan keamanan yang lebih baik.
+</Aside>
 
 Instalasi ILDIS dengan menggunakan vagrant adalah cara yang paling mudah dan cepat. Namun sebelum itu pastikan terlebih dahulu bahwa pada perangkat anda telah terpasang [Vagrant](https://developer.hashicorp.com/vagrant/install) dan [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
 
 export const vagrantUp = `vagrant up`;
 
-<Code code={vagrantUp} lang="shell"/>
+<Code code={vagrantUp} title="iTerm" lang="shell"/>
+
+Berikut adalah contoh proses booting virtual machine dengan perintah vagrant up berhasil :
+
+![vagrant up](./images/docs/vagrant-up.png)
+
+
+Jika virtual machine sudah berjalan, selanjutnya adalah masuk ke virtual machine menggunakan ssh dengan perintah berikut:
+
+export const vagrantSsh = `vagrant ssh`;
+
+<Code code={vagrantSsh} title="iTerm" lang="shell"/>
+
+Maka anda akan masuk ke dalam virtual machine dengan ildisv4 seperti contoh berikut:
+
+![vagrant ssh](./images/docs/vagrant-ssh.png)
+
+Selanjutnya adalah melakukan setup project ILDIS dengan perintah berikut :
+
+export const initializeYii2 = `cd /app && composer install && php init`;
+
+<Code code={initializeYii2} title="vagrant@ildis4:~" lang="shell"/>
+
+Jika semua proses sudah selesai selanjutnya anda dapat melakukan konfigurasi ILDIS pada file `.env`. Sebelum itu copy terlebih dahulu file konfigurasi contoh dengan perintah berikut:
+
+export const envFileCopy = `cp .env.example .env`;
+
+<Code code={envFileCopy} title="vagrant@ildis4:~" lang="shell"/>
+
+Setelah itu anda dapat mengubah konfigurasi file `.env` sesuai dengan kebutuhan anda. Berikut adalah isi dari file konfigurasi:
+
+<Code code={configExample} lang="text" title=".env" lang="shell"/>
+
+Selanjutnya anda dapat melakukan migrasi database dengan perintah berikut:
+
+export const migrateDatabase = `mysql -u root -p < /app/DATABASE/ildis_v4.sql`;
+
+<Code code={migrateDatabase} lang="shell" title="vagrant@ildis4:~"/>
+
+Jika semua berjalan dengan baik maka anda dapat mengakses laman ILDIS pada :
+- http://ildis-frontend.test (untuk frontend)
+- http://ildis-backend.test (untuk halaman admin)
+
+
+## Instalasi Manual (Tanpa Vagrant)
+
+Jika Anda tidak ingin menggunakan Vagrant, ILDIS dapat dipasang secara manual pada sistem Anda. Bagian ini menjelaskan cara instalasi manual di:
+
+- **Windows menggunakan XAMPP**
+- **Linux/macOS menggunakan PHP, Composer, dan MySQL**
+
+<Aside type="caution">
+    Instalasi manual membutuhkan pemahaman dasar tentang konfigurasi server web (Apache/Nginx), virtual host, serta permission file dan folder.
+</Aside>
+
+---
+
+### A. Linux / macOS
+
+#### 1. Instalasi Prasyarat
+
+export const installPrerequisitesUbuntu = `sudo add-apt-repository ppa:ondrej/php -y \nsudo apt-get update\nsudo apt install -y php7.4 php7.4-cli php7.4-common php7.4-curl php7.4-mbstring php7.4-intl php7.4-mysql php7.4-xml php7.4-fpm php7.4-gd php7.4-zip php7.4-xdebug unzip nginx mysql-server`;
+export const installPrerequisitesMac = `brew tap shivammathur/php\nbrew install php@7.4 mysql nginx git composer`;
+
+<Tabs>
+    <TabItem label="macOS (Homebrew)">
+        <Code code={installPrerequisitesMac} lang="shell" />
+        Setelah itu, tambahkan PHP 7.4 ke PATH:
+
+        <Code code={`echo 'export PATH="/opt/homebrew/opt/php@7.4/bin:$PATH"' >> ~/.zshrc\nsource ~/.zshrc`} lang="shell" />
+    </TabItem>
+    <TabItem label="Ubuntu">
+        <Code code={installPrerequisitesUbuntu} lang="shell" />
+        > **Catatan:** Jika `add-apt-repository` belum tersedia, jalankan `sudo apt-get install software-properties-common`.
+    </TabItem>
+</Tabs>
+
+#### 2. Unduh dan Pasang ILDIS
+
+export const cloneCommandLinuxMac = `cd /var/www
+git clone https://github.com/bphndigitalservice/ildis.git
+composer install
+php init`;
+
+<Code code={cloneCommandLinuxMac} lang="shell" />
+
+#### 3. Konfigurasi .env
+
+<Code code={`cp .env.example .env`} lang="shell" />
+
+Edit file .env:
+<Code code={databaseConfiguration} lang="env" title=".env" />
+
+#### 4. Import Database
+
+<Code code={`mysql -u root -p < DATABASE/ildis_v4.sql`} lang="shell" />
+
+#### 5. Konfigurasi Apache Virtual Host
+
+Buat file:
+
+<Code code={`sudo nano /etc/apache2/sites-available/ildis.conf`} lang="shell" />
+
+<Code code={apache} lang="apache" />
+
+#### Konfigurasi Nginx
+
+<Code code={`sudo nano /etc/nginx/sites-available/ildis`} lang="shell" />
+
+<Code code={nginx} lang="nginx" title="nginx" />
+
+Lalu aktifkan config-nya:
+
+<Tabs>
+    <TabItem label="macOS">
+        <Code code={`sudo brew services restart nginx`} lang="shell" />
+    </TabItem>
+    <TabItem label="Ubuntu">
+        <Code code={`sudo systemctl restart nginx`} lang="shell" />
+    </TabItem>
+</Tabs>
+
+#### 6. Edit /etc/hosts
+
+<Code code={`127.0.0.1 ildis-frontend.test
+127.0.0.1 ildis-backend.test\n
+`} lang="hosts" />
+
+Akses Aplikasi :
+
+- http://ildis-frontend.test (untuk frontend)
+- http://ildis-backend.test (untuk halaman admin)
+
+<br/>
+<br/>
+---
+
+
+### B. Windows dengan XAMPP
+
+<Aside type="caution">
+    Jangan gunakan XAMPP pada lingkungan production.
+</Aside>
+
+#### 1. Unduh dan Pasang XAMPP
+
+- Unduh dari [https://www.apachefriends.org/index.html](https://www.apachefriends.org/index.html)
+- Install dengan pilihan default
+- Aktifkan Apache dan MySQL melalui XAMPP Control Panel
+
+#### 2. Unduh ILDIS
+
+Clone ILDIS ke dalam folder `htdocs`:
+
+<Code code={`cd C:\\xampp\\htdocs\ngit clone https://github.com/bphndigitalservice/ildis.git ildis`} lang="shell" />
+
+Atau ekstrak file rilis dari [GitHub Releases](https://github.com/bphndigitalservice/ildis/releases)
+
+#### 3. Setup Proyek
+
+<Code code={`cd C:\\xampp\\htdocs\\ildis\ncomposer install\nphp init`} lang="powershell" />
+
+#### 4. Buat File .env
+
+<Code code={`copy .env.example .env`} lang="powershell" />
+
+Edit file `.env` dan sesuaikan nilai dengan kredensial MySQL / MariaDB anda.
+
+#### 5. Import Database
+
+<Code code={`mysql -u root < DATABASE/ildis_v4.sql`} lang="powershell" />
+
+Atau gunakan phpMyAdmin untuk import manual.
+
+#### 6. Buat Virtual Host
+
+Edit file `C:\xampp\apache\conf\extra\httpd-vhosts.conf`,  tambahkan :
+
+
+<Code code={apache} lang="apache" title="httpd-vhosts.conf"  />
+
+Edit file hosts:
+
+<Code code={`C:\\Windows\\System32\\drivers\\etc\\hosts`} lang="powershell" title="hosts" />
+
+Tambahkan baris berikut:
+<Code code={`127.0.0.1 ildis-frontend.test ildis-backend.test`} lang="text" title="hosts" />
+
+Restart Apache dari XAMPP Control Panel.
+
+
+## Konfigurasi Tambahan
+
+### Cookie Validation Key
+
+Pada halaman [konfigurasi](/konfigurasi) terdapat entry `COOKIE_VALIDATION_KEY_BE` dan `COOKIE_VALIDATION_KEY_FE` kedua entry tersebut harus diisi untuk validasi cookie agar mekanisme keamanan dapat berjalan dengan benar.
+
+Untuk generate `COOKIE_VALIDATION_KEY_BE` / `COOKIE_VALIDATION_KEY_FE` anda dapat mengeksekusi perintah berikut :
+
+export const highlights = ['COOKIE_VALIDATION_KEY_BE', 'COOKIE_VALIDATION_KEY_FE'];
+
+<Code code={configCookie} title=".env" lang="text" mark={highlights} />
+
+export const generateKey = `bash <(curl -s https://raw.githubusercontent.com/bphndigitalservice/ildis-cookie-validation-generator/refs/heads/main/generate_cookie_keys.sh)`;
+export const generateKeyPowershell = `$phpScript = Invoke-RestMethod -Uri "https://raw.githubusercontent.com/bphndigitalservice/ildis-cookie-validation-generator/refs/heads/main/generate_cookie_keys.php"
+php -r $phpScript`
+
+
+<Tabs>
+    <TabItem label="Linux / macOS">
+        <Code code={generateKey} title="bash" lang="shell" />
+    </TabItem>
+    <TabItem label="Windows">
+        <Code code={generateKeyPowershell} title="cmd" lang="powershell" />
+    </TabItem>
+</Tabs>
+
+
+### Recaptcha Key
+
+
 
 

@@ -1,0 +1,7 @@
+...
+
+#  Cookie validation keys for different environments
+COOKIE_VALIDATION_KEY_BE=
+COOKIE_VALIDATION_KEY_FE=
+
+...

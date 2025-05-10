@@ -2,3 +2,74 @@
 title: Integrasi / Sinkronisasi dengan Portal JDIHN
 description: Panduan Integrasi / Sinkronisasi dengan Portal JDIHN
 ---
+import {Code} from "@astrojs/starlight/components";
+import {Aside} from "@astrojs/starlight/components";
+
+## 🔁 Legacy
+
+Pada ILDIS versi 4 terdapat pendekatan _legacy_ untuk sinkronisasi data ke Portal JDIHN. Pendekatan ini masih didukung dan menggunakan endpoint sebagai berikut:
+
+<Code language="bash" code={`http://<domain>/i/2/ANGGOTA/kode-sync2K24abs.php`} />
+
+URL ini yang nantinya perlu anda daftarkan di [https://jdihn.go.id](https://jdihn.go.id) pada halaman pengaturan akun anggota.
+
+<Aside type="note">
+    Pendekatan legacy ini bersifat langsung dan akan melakukan query database secara real-time setiap kali diakses oleh sistem JDIHN.
+</Aside>
+
+---
+
+## 🚀 Metode Baru (Direkomendasikan)
+
+Untuk meningkatkan performa dan skalabilitas, ILDIS kini mendukung metode sinkronisasi berbasis file JSON terjadwal. Metode ini lebih efisien karena data tidak perlu di-*generate* setiap kali diakses.
+
+<Aside type="caution">
+    Fitur ini <strong>belum tersedia di branch <code>main</code></strong>. Anda dapat mengaksesnya melalui branch <code>feature-updateLibrary</code> di repository ILDIS. Harap pastikan anda berada di branch tersebut sebelum mencobanya.
+</Aside>
+
+### Langkah-langkah:
+
+#### 1. Buat Cron Job
+
+Eksekusi perintah berikut menggunakan `cron`, misalnya setiap hari pukul 02:00:
+
+<Code language="bash" code={`php /path/to/yii feed/generate-document`} title="Cron Job Command"/>
+
+Contoh entri di `crontab -e`:
+
+<Code language="bash" code={`0 2 * * * php /path/to/yii feed/generate-document`} title="Cron Job Entri"/>
+
+Perintah ini akan menghasilkan file:
+
+<Code language="bash" code={`/path/to/web/document/feed.json`} title="File JSON"/>
+
+
+#### 2. Pastikan Folder `feed/` Bisa Diakses Publik
+
+Agar dapat diakses oleh JDIHN, file JSON harus tersedia secara publik melalui URL:
+
+<Code language="bash" code={`http://<domain>/feed/document.json`} />
+
+Misalnya:
+
+- `http://ildis-frontend.test/feed/document.json`
+- `https://jdih.kemenkum.go.id/feed/document.json`
+
+> JDIHN akan mengambil data langsung dari file ini tanpa harus memicu query database.
+
+#### 3. Daftarkan URL Feed ke Portal JDIHN
+
+Masuk ke akun anggota JDIHN, kemudian daftarkan URL feed JSON tersebut pada halaman pengaturan akun.
+
+---
+
+## ✅ Keunggulan Metode Baru
+
+- ⏱️ **Lebih Cepat**: JDIHN cukup membaca file JSON tanpa proses backend tambahan.
+- 💾 **Lebih Ringan**: Mengurangi beban server ILDIS karena query hanya dijalankan sekali.
+- 🔄 **Lebih Stabil**: Tidak bergantung pada ketersediaan database real-time saat JDIHN melakukan request.
+
+<Aside type="tip">
+    Gunakan metode baru ini untuk integrasi yang lebih modern dan scalable. Metode legacy tetap tersedia hanya untuk kompatibilitas.
+</Aside>
+

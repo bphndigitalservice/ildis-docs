@@ -1,4 +1,29 @@
 ---
 title: Konfigurasi
-description: Konfigurasi
+description: Penjelasan terkait konfigurasi yang terdapat pada ILDIS v4
 ---
+
+## Item Konfigurasi
+
+| Nama Konfigurasi              | Deskripsi                                                                 |
+|------------------------------|---------------------------------------------------------------------------|
+| `YII_ENV`                    | Menentukan lingkungan aplikasi Yii2 yang digunakan (`dev`, `test`, `prod`). Nilai `prod` menunjukkan mode produksi. |
+| `YII_DEBUG`                  | Mengaktifkan (`true`) atau menonaktifkan (`false`) mode debug. Sebaiknya diset ke `false` di lingkungan produksi. |
+| `DB_HOST`                    | Alamat host server basis data MySQL, biasanya `localhost` untuk pengembangan lokal. |
+| `DB_USER`                    | Nama pengguna untuk koneksi ke basis data. |
+| `DB_PASSWORD`                | Kata sandi untuk pengguna basis data. Harus dijaga kerahasiaannya. |
+| `DB_DATABASE`                | Nama basis data yang digunakan oleh aplikasi ILDIS. |
+| `DB_DATABASE_PORT`           | Port yang digunakan untuk koneksi MySQL. Umumnya `3306`. |
+| `PUBLIC_DOMAIN`              | Domain publik atau URL frontend aplikasi ILDIS. |
+| `COOKIE_VALIDATION_KEY_BE`  | Kunci validasi cookie untuk aplikasi backend. Digunakan untuk memastikan integritas data cookie. |
+| `COOKIE_VALIDATION_KEY_FE`  | Kunci validasi cookie untuk aplikasi frontend. Harus unik dan tidak boleh kosong. |
+| `RECAPTCHA_SITE_KEY`        | Kunci publik Google reCAPTCHA untuk menampilkan widget keamanan. |
+| `RECAPTCHA_SECRET_KEY`      | Kunci rahasia Google reCAPTCHA untuk proses verifikasi di sisi server. |
+
+## Generate Cookie Validation Key
+
+Coming soon
+
+## Google Recaptcha
+
+Coming Soon

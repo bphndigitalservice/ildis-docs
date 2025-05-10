@@ -1,0 +1,6 @@
+#  Database configuration
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=yourpassword
+DB_DATABASE=ildis_v4
+DB_DATABASE_PORT=3306

@@ -5,9 +5,11 @@ import starlight from '@astrojs/starlight';
 import vercel from '@astrojs/vercel';
 import starlightThemeNova from 'starlight-theme-nova';
 
+
 // https://astro.build/config
 export default defineConfig({
     site: 'https://ildis.bphn.go.id',
+
     integrations: [
         starlight({
                 title: 'ILDIS v4',
@@ -24,10 +26,16 @@ export default defineConfig({
                     },
                 ],
                 social: [{icon: 'github', label: 'GitHub', href: 'https://github.com/bphndigitalservice/ildis'}],
-                credits: true,
+                editLink: {
+                    baseUrl: 'https://github.com/bphndigitalservice/ildis-docs/edit/main/',
+                },
+
                 description: 'Panduan resmi instalasi dan penggunaan Sistem Informasi Dokumentasi Hukum Indonesia (ILDIS)',
                 defaultLocale: 'id',
-                customCss: ['./src/assets/landing.css'],
+                components: {
+                    Footer: "./src/components/Footer.astro",
+                },
+                customCss: ['./src/styles/landing.css',],
                 locales: {
                     root: {
                         label: 'Bahasa Indonesia',
@@ -46,9 +54,9 @@ export default defineConfig({
                         label: 'Instalasi & Konfigurasi',
                         items: [
                             {label: 'Instalasi', link: '/instalasi'},
-                            {label: 'Konfigurasi', link: '/konfigurasi'},
                             {label: 'Struktur Direktori', link: '/struktur-direktori'},
                             {label: 'Deployment', link: '/deployment'},
+                            {label: 'Konfigurasi', link: '/konfigurasi'},
                         ]
                     },
                     {
@@ -66,12 +74,17 @@ export default defineConfig({
                         link: '/kontribusi',
                     },
                     {
+                        label: 'Dukungan & Komunitas',
+                        link: '/dukungan-komunitas',
+                    },
+                    {
                         label: 'Aplikasi Alternative ',
                         link: '/alternative',
                     }
                 ],
                 expressiveCode: {
-                    styleOverrides: {borderRadius: '0.5rem'},
+                    useStarlightDarkModeSwitch: true,
+                    themes: ['github-dark', 'github-light']
                 },
                 plugins: [starlightThemeNova({
                     nav: [
@@ -85,8 +98,18 @@ export default defineConfig({
                         },
                     ],
                 })],
-            }
+                lastUpdated: true,
+                titleDelimiter: '-',
+                pagination: true,
+                tableOfContents: {
+                    maxHeadingLevel: 5,
+                    minHeadingLevel: 1,
+
+                },
+                tagline: 'Panduan resmi instalasi dan penggunaan Indonesia Law Documentation Information System (ILDIS)',
+            },
         )],
+
     image: {service: passthroughImageService(),},
     adapter: vercel(),
 });

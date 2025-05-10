@@ -1,0 +1,17 @@
+<VirtualHost *:80>
+    ServerName ildis-frontend.test
+    DocumentRoot /var/www/ildis/frontend/web
+    <Directory /var/www/ildis>
+        AllowOverride All
+        Require all granted
+    </Directory>
+</VirtualHost>
+
+<VirtualHost *:80>
+    ServerName ildis-backend.test
+    DocumentRoot /var/www/ildis/backend/web
+    <Directory /var/www/ildis/backend/web>
+        AllowOverride All
+        Require all granted
+    </Directory>
+</VirtualHost>
