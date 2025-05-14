@@ -68,7 +68,7 @@ export default defineConfig({
                     },
                     {
                         label: 'Kustomisasi',
-                        link: '/kontribusi',
+                        link: '/kustomisasi',
                     },
                     {
                         label: 'Troubleshooting',

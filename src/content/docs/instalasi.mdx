@@ -273,6 +273,24 @@ Restart Apache dari XAMPP Control Panel.
 <br/>
 
 ---
+
+
+## User Default Backend / Admin
+
+Untuk membuat user awal anda dapat menggunakan user :
+
+<Code code={`username : sample\npassword: C~;4dwqWh>(!%:e,<r`} title="User Default" lang="text" />
+
+<Aside type="caution">
+    User default ini hanya untuk mencoba aplikasi. Pada pembaharuan selanjutnya kami akan menghapus user default ini dan menggunakan pembuatan user menggunakan command line.
+</Aside>
+
+### Membuat user dengan CLI
+
+Untuk membuat user dengan CLI anda dapat menggunakan command berikut :
+
+<Code code={`php yii user/create`} title="Membuat User" lang="shell" />
+
 ## Konfigurasi Tambahan
 
 ### Cookie Validation Key
@@ -364,7 +382,7 @@ Copy value pada bagian ini ke entry `COOKIE_VALIDATION_KEY_FE`.
 Copy value pada bagian ini ke entry `COOKIE_VALIDATION_KEY_BE`.
 
 
-##### Referensi :
+Referensi :
 
 - [Google reCAPTCHA Docs](https://developers.google.com/recaptcha/docs/v3)
 - [Admin Console](https://www.google.com/recaptcha/admin)
