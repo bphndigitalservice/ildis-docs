@@ -18,6 +18,8 @@ import vagrantConfig from 'config_example/vagrant?raw'
     [Composer](https://getcomposer.org/download/). Lihat [Persyaratan Sistem](/persyaratan-sistem)
 </Aside>
 
+Instalasi ILDIS pada halaman ini paling menggambarkan kondisi instalasi pada lingkungan pengembangan (_development_). Namun section [instalasi manual](#instalasi-manual-tanpa-vagrant) terutama pada Sistem Operasi Ubuntu dapat mewakili kondisi lingkungan _production_. Anda dapat langsung ke bagian [instalasi manual](#instalasi-manual-tanpa-vagrant) jika anda ingin segera memasang ILDIS pada lingkunga _production_ lalu melihat referensi konfigurasi yang direkomendasikan pada halaman [deployment](/deployment).
+
 
 ## Unduh ILDIS
 
@@ -267,18 +269,23 @@ Tambahkan baris berikut:
 
 Restart Apache dari XAMPP Control Panel.
 
+<br/>
+<br/>
 
+---
 ## Konfigurasi Tambahan
 
 ### Cookie Validation Key
 
 Pada halaman [konfigurasi](/konfigurasi) terdapat entry `COOKIE_VALIDATION_KEY_BE` dan `COOKIE_VALIDATION_KEY_FE` kedua entry tersebut harus diisi untuk validasi cookie agar mekanisme keamanan dapat berjalan dengan benar.
 
-Untuk generate `COOKIE_VALIDATION_KEY_BE` / `COOKIE_VALIDATION_KEY_FE` anda dapat mengeksekusi perintah berikut :
-
 export const highlights = ['COOKIE_VALIDATION_KEY_BE', 'COOKIE_VALIDATION_KEY_FE'];
 
 <Code code={configCookie} title=".env" lang="text" mark={highlights} />
+
+Untuk generate `COOKIE_VALIDATION_KEY_BE` / `COOKIE_VALIDATION_KEY_FE` anda dapat mengeksekusi perintah berikut :
+
+
 
 export const generateKey = `bash <(curl -s https://raw.githubusercontent.com/bphndigitalservice/ildis-cookie-validation-generator/refs/heads/main/generate_cookie_keys.sh)`;
 export const generateKeyPowershell = `$phpScript = Invoke-RestMethod -Uri "https://raw.githubusercontent.com/bphndigitalservice/ildis-cookie-validation-generator/refs/heads/main/generate_cookie_keys.php"
@@ -287,15 +294,82 @@ php -r $phpScript`
 
 <Tabs>
     <TabItem label="Linux / macOS">
-        <Code code={generateKey} title="bash" lang="shell" />
+        <Code code={generateKey} title="Terminal" lang="shell" />
     </TabItem>
     <TabItem label="Windows">
-        <Code code={generateKeyPowershell} title="cmd" lang="powershell" />
+        <Code code={generateKeyPowershell} title="Windows PowerShell" lang="powershell" />
     </TabItem>
 </Tabs>
 
+<br/>
+<br/>
+
+---
 
 ### Google Recaptcha Key
+
+Google reCAPTCHA v3 membantu melindungi ILDIS dari bot tanpa interaksi pengguna pada halaman Login Admin (backend). Berikut ini adalah langkah-langkah untuk mendapatkan **Site Key** dan **Secret Key** dari Google reCAPTCHA v3.
+
+####  Langkah-langkah Mendapatkan reCAPTCHA v3 Key
+
+##### 1. Kunjungi Halaman Admin Google reCAPTCHA
+
+Buka link berikut di browser Anda:
+
+```
+https://www.google.com/recaptcha/admin/create
+```
+
+> Anda harus login menggunakan akun Google.
+
+##### 2. Daftarkan Situs Baru
+
+Isi form yang tersedia dengan detail sebagai berikut:
+
+- **Label**
+Nama identifikasi untuk project kamu. Misalnya: `MyILDIS`
+
+- **reCAPTCHA Type**
+Pilih opsi:
+```
+reCAPTCHA v3
+  ```
+
+- **Domains**
+Masukkan domain tempat anda akan menggunakan reCAPTCHA, tanpa `https://` dan tanpa `/`. Contoh:
+```
+ildis-backend.test
+jdih.kemenkum.go.id
+```
+
+- **Owners**
+Secara default diisi dengan akun anda. Bisa ditambahkan owner lain jika perlu.
+
+- **Accept the reCAPTCHA Terms of Service**
+Centang checkbox ini untuk menyetujui ketentuan.
+
+- (Optional) Centang "Send alerts to owners" jika ingin menerima notifikasi keamanan dari Google.
+
+Klik tombol **Submit** untuk mendaftar.
+
+
+##### 3. Salin Site Key dan Secret Key
+
+Setelah submit, kamu akan melihat dua key penting:
+
+- **Site Key**
+Copy value pada bagian ini ke entry `COOKIE_VALIDATION_KEY_FE`.
+
+- **Secret Key**
+Copy value pada bagian ini ke entry `COOKIE_VALIDATION_KEY_BE`.
+
+
+##### Referensi :
+
+- [Google reCAPTCHA Docs](https://developers.google.com/recaptcha/docs/v3)
+- [Admin Console](https://www.google.com/recaptcha/admin)
+
+---
 
 
 
