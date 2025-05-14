@@ -23,7 +23,8 @@ export default defineConfig({
                             href: '/images/favicon.ico',
                             sizes: '32x32',
                         },
-                    },
+                    }
+
                 ],
                 social: [{icon: 'github', label: 'GitHub', href: 'https://github.com/bphndigitalservice/ildis'}],
                 editLink: {

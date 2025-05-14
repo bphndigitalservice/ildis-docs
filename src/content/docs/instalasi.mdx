@@ -10,6 +10,7 @@ import configCookie from 'config_example/env_cookie_validation_key?raw';
 import databaseConfiguration from 'config_example/env_database?raw';
 import nginx from 'config_example/nginx?raw';
 import apache from 'config_example/apache?raw';
+import vagrantConfig from 'config_example/vagrant?raw'
 
 
 <Aside type="tip">
@@ -44,6 +45,16 @@ ILDIS dapat dipasang pada berbagai macam sistem operasi seperti Linux, Windows, 
 Instalasi ILDIS dengan menggunakan vagrant adalah cara yang paling mudah dan cepat. Namun sebelum itu pastikan terlebih dahulu bahwa pada perangkat anda telah terpasang [Vagrant](https://developer.hashicorp.com/vagrant/install) dan [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
 
 export const vagrantUp = `vagrant up`;
+
+PERTHATIAN!! Sebelum itu anda harus membuat Github Personal Token terlebih dahulu <a href="https://github.com/settings/tokens" target="_blank">di sini</a>. Pada halaman tersebut anda dapat memilih **Generate New Token** lalu pilih **Generate new token (classic)** dan pilih *Expiration* sesuai kebutuhan anda. Centang **_repo_** seperti pada gambar :
+
+![Github PAT](./images/docs/github-new-token.png)
+
+Selanjutnya copy Personal Access Token Tersebut ke file `vagrant/config/vagrant-local.yml` pada bagian `github_token` :
+
+<Code code={vagrantConfig} title="vagrant-local.yml" lang="yaml" mark={['github_token']}/>
+
+Setelah itu anda dapat mengeksekusi perintah berikut :
 
 <Code code={vagrantUp} title="iTerm" lang="shell"/>
 
