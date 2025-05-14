@@ -89,9 +89,18 @@ Setelah itu anda dapat mengubah konfigurasi file `.env` sesuai dengan kebutuhan 
 
 <Code code={configExample} lang="text" title=".env" lang="shell"/>
 
+Jika semua konfigurasi sudah selesai, buat database dengan nama sesuai dengan yang anda buat pada file konfigurasi. Di sini misalnya `ildis_v4`:
+
+<Code code={`mysql -u root`} lang="shell" title="vagrant@ildis4:~"/>
+
+Lalu buat database dengan perintah berikut:
+
+<Code code={`create database ildis_v4; //tekan enter\nexit;`} lang="shell" title="mysql"/>
+
+
 Selanjutnya anda dapat melakukan migrasi database dengan perintah berikut:
 
-export const migrateDatabase = `mysql -u root -p < /app/DATABASE/ildis_v4.sql`;
+export const migrateDatabase = `mysql -u root ildis_v4 < /app/DATABASE/ildis_v4.sql`;
 
 <Code code={migrateDatabase} lang="shell" title="vagrant@ildis4:~"/>
 
@@ -99,17 +108,22 @@ Jika semua berjalan dengan baik maka anda dapat mengakses laman ILDIS pada :
 - http://ildis-frontend.test (untuk frontend)
 - http://ildis-backend.test (untuk halaman admin)
 
+Jika semua berjalan lancar maka anda akan mendapatkan tampilan seperti ini :
+
+![Sukses Instalasi ILDIS Frontend](./images/docs/success-ildis-frontend.png)
+
+<Aside type="caution">
+    1. Untuk halaman backend (login admin) anda memerlukan Google Recaptcha Key. Lihat [Konfigurasi Tambahan](#google-recaptcha-key)
+    2. Anda Perlu membuat Cookie Validation Key untuk mengamankan session. Lihat [Konfigurasi Tambahan](#cookie-validation-keyy)
+</Aside>
 
 ## Instalasi Manual (Tanpa Vagrant)
 
-Jika Anda tidak ingin menggunakan Vagrant, ILDIS dapat dipasang secara manual pada sistem Anda. Bagian ini menjelaskan cara instalasi manual di:
+Jika Anda tidak ingin menggunakan Vagrant, ILDIS dapat dipasang secara manual pada sistem Anda. Namun perlu dipahami bahwa instalasi manual membutuhkan pemahaman dasar tentang konfigurasi server web (Apache/Nginx), virtual host, serta permission file dan folder.
 
+Bagian ini menjelaskan cara instalasi manual pada lingkungan :
 - **Windows menggunakan XAMPP**
 - **Linux/macOS menggunakan PHP, Composer, dan MySQL**
-
-<Aside type="caution">
-    Instalasi manual membutuhkan pemahaman dasar tentang konfigurasi server web (Apache/Nginx), virtual host, serta permission file dan folder.
-</Aside>
 
 ---
 
@@ -151,7 +165,7 @@ Edit file .env:
 
 #### 4. Import Database
 
-<Code code={`mysql -u root -p < DATABASE/ildis_v4.sql`} lang="shell" />
+<Code code={`mysql -u root -p ildis_v4 < DATABASE/ildis_v4.sql`} lang="shell" />
 
 #### 5. Konfigurasi Apache Virtual Host
 
@@ -189,8 +203,15 @@ Akses Aplikasi :
 - http://ildis-frontend.test (untuk frontend)
 - http://ildis-backend.test (untuk halaman admin)
 
+
+<Aside type="caution">
+    1. Untuk halaman backend (login admin) anda memerlukan Google Recaptcha Key. Lihat [Konfigurasi Tambahan](#google-recaptcha-key)
+    2. Anda Perlu membuat Cookie Validation Key untuk mengamankan session. Lihat [Konfigurasi Tambahan](#cookie-validation-keyy)
+</Aside>
+
 <br/>
 <br/>
+
 ---
 
 
@@ -226,7 +247,7 @@ Edit file `.env` dan sesuaikan nilai dengan kredensial MySQL / MariaDB anda.
 
 #### 5. Import Database
 
-<Code code={`mysql -u root < DATABASE/ildis_v4.sql`} lang="powershell" />
+<Code code={`mysql -u root -p ildis_v4 < DATABASE/ildis_v4.sql`} lang="powershell" />
 
 Atau gunakan phpMyAdmin untuk import manual.
 
@@ -274,7 +295,7 @@ php -r $phpScript`
 </Tabs>
 
 
-### Recaptcha Key
+### Google Recaptcha Key
 
 
 

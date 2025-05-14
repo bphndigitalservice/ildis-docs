@@ -67,6 +67,10 @@ export default defineConfig({
                         ],
                     },
                     {
+                        label: 'Kustomisasi',
+                        link: '/kontribusi',
+                    },
+                    {
                         label: 'Troubleshooting',
                         autogenerate: {directory: '/troubleshooting/', collapsed: true},
                     },
