@@ -3,15 +3,19 @@ title: Deployment
 description: Deployment
 ---
 
+import {Code} from "@astrojs/starlight/components";
+import nginx from 'config_example/nginx.conf?raw';
+import apache from 'config_example/apache.conf?raw';
+
 ### Nginx
 
-coming soon
+<Code code={nginx} lang="nginx" title="nginx" />
 
 ---
 
 ### Apache
 
-coming soon
+<Code code={apache} lang="apache2" title="Apache" />
 
 ---
 
@@ -20,3 +24,4 @@ coming soon
 coming soon
 
 ---
+
