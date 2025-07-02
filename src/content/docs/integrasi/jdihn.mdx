@@ -5,22 +5,6 @@ description: Panduan Integrasi / Sinkronisasi dengan Portal JDIHN
 import {Code} from "@astrojs/starlight/components";
 import {Aside} from "@astrojs/starlight/components";
 
-## 🔁 Legacy
-
-Pada ILDIS versi 4 terdapat pendekatan _legacy_ untuk sinkronisasi data ke Portal JDIHN. Pendekatan ini masih didukung dan menggunakan endpoint sebagai berikut:
-
-<Code language="bash" code={`http://<domain>/i/2/ANGGOTA/kode-sync2K24abs.php`} />
-
-URL ini yang nantinya perlu anda daftarkan di [https://jdihn.go.id](https://jdihn.go.id) pada halaman pengaturan akun anggota.
-
-<Aside type="note">
-    Pendekatan legacy ini bersifat langsung dan akan melakukan query database secara real-time setiap kali diakses oleh sistem JDIHN.
-</Aside>
-
----
-
-## 🚀 Metode Baru (Direkomendasikan)
-
 Untuk meningkatkan performa dan skalabilitas, ILDIS kini mendukung metode sinkronisasi berbasis file JSON terjadwal. Metode ini lebih efisien karena data tidak perlu di-*generate* setiap kali diakses.
 
 ### Langkah-langkah:
