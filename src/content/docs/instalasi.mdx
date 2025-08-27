@@ -153,7 +153,7 @@ export const installPrerequisitesMac = `brew tap shivammathur/php\nbrew install 
 
 export const cloneCommandLinuxMac = `cd /var/www
 git clone https://github.com/bphndigitalservice/ildis.git
-composer install
+composer install --ignore-platform-reqs
 php init`;
 
 <Code code={cloneCommandLinuxMac} lang="shell" />
