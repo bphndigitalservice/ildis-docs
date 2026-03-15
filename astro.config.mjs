@@ -157,8 +157,46 @@ export default defineConfig({
                 sidebar: [
                     {
                         label: 'Pendahuluan',
-                        autogenerate: { directory: 'v4' },
+                        items: [
+                            {label: 'Tentang ILDIS', link: '/v4/tentang-ildis'},
+                            {label: 'Persyaratan Sistem', link: '/v4/persyaratan-sistem'},
+                        ],
                     },
+                    {
+                        label: 'Instalasi & Konfigurasi',
+                        items: [
+                            {label: 'Instalasi', link: '/v4/instalasi'},
+                            {label: 'Struktur Direktori', link: '/v4/struktur-direktori'},
+                            {label: 'Deployment', link: '/v4/deployment'},
+                            {label: 'Konfigurasi', link: '/v4/konfigurasi'},
+                        ]
+                    },
+                    {
+                        label: 'Integrasi',
+                        items: [
+                            {label: 'JDIHN.go.id', link: '/v4/integrasi/jdihn'},
+                        ],
+                    },
+                    {
+                        label: 'Kustomisasi',
+                        link: '/v4/kustomisasi',
+                    },
+                    {
+                        label: 'Troubleshooting',
+                        autogenerate: {directory: 'v4/troubleshooting/', collapsed: true},
+                    },
+                    {
+                        label: 'Kontribusi',
+                        link: '/v4/kontribusi',
+                    },
+                    {
+                        label: 'Dukungan & Komunitas',
+                        link: '/v4/dukungan-komunitas',
+                    },
+                    {
+                        label: 'Aplikasi Alternative',
+                        link: '/v4/alternative',
+                    }
                 ],
                 expressiveCode: {
                     useStarlightDarkModeSwitch: true,
