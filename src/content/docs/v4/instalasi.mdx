@@ -37,6 +37,72 @@ Anda juga dapat mengunduh rilis terakhir ILDIS pada website <a href="https://git
 <br/>
 ---
 
+## Instalasi dengan Docker
+
+Mulai versi 4.1.0, ILDIS mendukung instalasi menggunakan Docker. Terdapat dua cara untuk menjalankan ILDIS dengan Docker:
+
+<Tabs>
+<TabItem label="Menggunakan Image GHCR">
+
+Anda dapat langsung menggunakan image Docker yang sudah dibangkitkan (_pre-built_) dari GitHub Container Registry:
+
+<Code code={`docker pull ghcr.io/bphndigitalservice/ildis:latest
+docker-compose up -d`} lang="shell" />
+
+Image docker tersedia di: `ghcr.io/bphndigitalservice/ildis:latest`
+
+Pastikan Anda telah membuat file `.env` berdasarkan `.env.example` sebelum menjalankan container.
+
+</TabItem>
+<TabItem label="Build dari Source">
+
+Jika Anda ingin mengkustomisasi atau mengembangkan ILDIS, Anda dapat membangun image Docker sendiri:
+
+<Code code={`git clone https://github.com/bphndigitalservice/ildis.git
+cd ildis
+cp .env.example .env
+# Edit file .env sesuai konfigurasi Anda
+docker-compose up --build -d`} lang="shell" />
+
+</TabItem>
+</Tabs>
+
+### Konfigurasi Environment
+
+Buat file `.env` dari template yang disediakan:
+
+<Code code={`cp .env.example .env`} lang="shell" />
+
+Edit file `.env` dengan konfigurasi berikut:
+
+<Code code={configExample} lang="env" title=".env" />
+
+### Import Database
+
+Import database awal dengan perintah:
+
+<Code code={`# Jika menggunakan container mysql dari docker-compose
+docker exec -i ildis_mysql mysql -u root -pildis2024 ildis_v4 < DATABASE/ildis_v4.sql`} lang="shell" />
+
+### Akses Aplikasi
+
+Setelah container berjalan, akses ILDIS di:
+
+- **Frontend**: http://localhost:8080
+- **Backend**: http://localhost:8080/backend
+
+<Aside type="note">
+Port dan domain dapat dikonfigurasi pada file `docker-compose.yml` dan `.env`.
+</Aside>
+
+<Aside type="caution">
+Pastikan `COOKIE_VALIDATION_KEY_BE` dan `COOKIE_VALIDATION_KEY_FE` telah diisi. Lihat [Konfigurasi Tambahan](#cookie-validation-key) untuk membuat key.
+</Aside>
+
+<br/>
+<br>
+---
+
 ## Vagrant
 ILDIS dapat dipasang pada berbagai macam sistem operasi seperti Linux, Windows, atau macOS. Pada tahap development kami menyarankan anda untuk menggunakan Vagrant.
 
