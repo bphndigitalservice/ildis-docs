@@ -47,7 +47,7 @@ Mulai versi 4.1.0, ILDIS mendukung instalasi menggunakan Docker. Terdapat dua ca
 Anda dapat langsung menggunakan image Docker yang sudah dibangkitkan (_pre-built_) dari GitHub Container Registry:
 
 <Code code={`docker pull ghcr.io/bphndigitalservice/ildis:latest
-docker-compose up -d`} lang="shell" />
+docker compose up -d`} lang="shell" />
 
 Image docker tersedia di: `ghcr.io/bphndigitalservice/ildis:latest`
 
@@ -62,7 +62,7 @@ Jika Anda ingin mengkustomisasi atau mengembangkan ILDIS, Anda dapat membangun i
 cd ildis
 cp .env.example .env
 # Edit file .env sesuai konfigurasi Anda
-docker-compose up --build -d`} lang="shell" />
+docker compose up --build -d`} lang="shell" />
 
 </TabItem>
 </Tabs>
