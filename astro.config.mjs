@@ -90,10 +90,13 @@ export default defineConfig({
                                     
                                     if (currentPath.includes('/v4/')) {
                                         selector.value = 'v4';
+                                        updateSidebarLinks('v4');
                                     } else if (currentPath.includes('/v5/')) {
                                         selector.value = 'v5';
+                                        updateSidebarLinks('v5');
                                     } else {
                                         selector.value = 'v5';
+                                        updateSidebarLinks('v5');
                                     }
                                     
                                     selector.addEventListener('change', function(e) {
@@ -108,6 +111,24 @@ export default defineConfig({
                                         
                                         var docPath = pathParts.join('/') || 'tentang-ildis';
                                         window.location.href = '/' + version + '/' + docPath;
+                                    });
+                                }
+                                
+                                function updateSidebarLinks(version) {
+                                    var sidebarLinks = document.querySelectorAll('.sidebar-content a');
+                                    sidebarLinks.forEach(function(link) {
+                                        var href = link.getAttribute('href');
+                                        if (href && !href.startsWith('http')) {
+                                            if (!href.startsWith('/' + version + '/')) {
+                                                var pathParts = href.split('/').filter(Boolean);
+                                                if (pathParts[0] === 'v4' || pathParts[0] === 'v5') {
+                                                    pathParts[0] = version;
+                                                } else {
+                                                    pathParts.unshift(version);
+                                                }
+                                                link.setAttribute('href', '/' + pathParts.join('/'));
+                                            }
+                                        }
                                     });
                                 }
                             });
@@ -134,13 +155,8 @@ export default defineConfig({
                 },
                 sidebar: [
                     {
-                        label: 'v5 (Latest)',
-                        translations: { id: 'v5 (Terbaru)' },
+                        label: 'Pendahuluan',
                         autogenerate: { directory: 'v5' },
-                    },
-                    {
-                        label: 'v4',
-                        autogenerate: { directory: 'v4' },
                     },
                 ],
                 expressiveCode: {
