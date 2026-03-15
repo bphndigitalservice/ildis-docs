@@ -5,12 +5,12 @@ description: Instalasi ILDIS
 import {Aside} from '@astrojs/starlight/components';
 import {Code} from '@astrojs/starlight/components';
 import {Tabs, TabItem} from '@astrojs/starlight/components';
-import configExample from 'config_example/env?raw';
-import configCookie from 'config_example/env_cookie_validation_key?raw';
-import databaseConfiguration from 'config_example/env_database?raw';
-import nginx from 'config_example/nginx.conf?raw';
-import apache from 'config_example/apache.conf?raw';
-import vagrantConfig from 'config_example/vagrant?raw'
+import configExample from './config_example/env?raw';
+import configCookie from './config_example/env_cookie_validation_key?raw';
+import databaseConfiguration from './config_example/env_database?raw';
+import nginx from './config_example/nginx.conf?raw';
+import apache from './config_example/apache.conf?raw';
+import vagrantConfig from './config_example/vagrant?raw'
 
 
 <Aside type="tip">
@@ -50,7 +50,7 @@ export const vagrantUp = `vagrant up`;
 
 PERTHATIAN!! Sebelum itu anda harus membuat Github Personal Token terlebih dahulu <a href="https://github.com/settings/tokens" target="_blank">di sini</a>. Pada halaman tersebut anda dapat memilih **Generate New Token** lalu pilih **Generate new token (classic)** dan pilih *Expiration* sesuai kebutuhan anda. Centang **_repo_** seperti pada gambar :
 
-![Github PAT](./images/docs/github-new-token.png)
+![Github PAT](../../../assets/images/docs/github-new-token.png)
 
 Selanjutnya copy Personal Access Token Tersebut ke file `vagrant/config/vagrant-local.yml` pada bagian `github_token` :
 
@@ -62,7 +62,7 @@ Setelah itu anda dapat mengeksekusi perintah berikut :
 
 Berikut adalah contoh proses booting virtual machine dengan perintah vagrant up berhasil :
 
-![vagrant up](./images/docs/vagrant-up.png)
+![vagrant up](../../../assets/images/docs/vagrant-up.png)
 
 
 Jika virtual machine sudah berjalan, selanjutnya adalah masuk ke virtual machine menggunakan ssh dengan perintah berikut:
@@ -73,7 +73,7 @@ export const vagrantSsh = `vagrant ssh`;
 
 Maka anda akan masuk ke dalam virtual machine dengan ildisv4 seperti contoh berikut:
 
-![vagrant ssh](./images/docs/vagrant-ssh.png)
+![vagrant ssh](../../../assets/images/docs/vagrant-ssh.png)
 
 Selanjutnya adalah melakukan setup project ILDIS dengan perintah berikut :
 
@@ -112,7 +112,7 @@ Jika semua berjalan dengan baik maka anda dapat mengakses laman ILDIS pada :
 
 Jika semua berjalan lancar maka anda akan mendapatkan tampilan seperti ini :
 
-![Sukses Instalasi ILDIS Frontend](./images/docs/success-ildis-frontend.png)
+![Sukses Instalasi ILDIS Frontend](../../../assets/images/docs/success-ildis-frontend.png)
 
 <Aside type="caution">
     1. Untuk halaman backend (login admin) anda memerlukan Google Recaptcha Key. Lihat [Konfigurasi Tambahan](#google-recaptcha-key)
