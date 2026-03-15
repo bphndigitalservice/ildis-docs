@@ -78,7 +78,7 @@ export default defineConfig({
                         tag: 'script',
                         content: `
                             document.addEventListener('DOMContentLoaded', function() {
-                                var nav = document.querySelector('.header-bottom-nav');
+                                var nav = document.querySelector('.nova-header-nav');
                                 if (nav) {
                                     var wrapper = document.createElement('div');
                                     wrapper.className = 'version-select-wrapper';
