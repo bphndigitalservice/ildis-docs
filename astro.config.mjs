@@ -82,21 +82,18 @@ export default defineConfig({
                                 if (nav) {
                                     var wrapper = document.createElement('div');
                                     wrapper.className = 'version-select-wrapper';
-                                    wrapper.innerHTML = '<select id="version-selector"><option value="v5">v5 (Latest)</option><option value="v4">v4</option></select>';
+                                    wrapper.innerHTML = '<select id="version-selector"><option value="v4">v4</option><option value="v5">v5</option></select>';
                                     nav.insertBefore(wrapper, nav.firstChild);
                                     
                                     var currentPath = window.location.pathname;
                                     var selector = document.getElementById('version-selector');
                                     
-                                    if (currentPath.includes('/v4/')) {
-                                        selector.value = 'v4';
-                                        updateSidebarLinks('v4');
-                                    } else if (currentPath.includes('/v5/')) {
+                                    if (currentPath.includes('/v5/')) {
                                         selector.value = 'v5';
-                                        updateSidebarLinks('v5');
+                                        updateSidebarContent('v5');
                                     } else {
-                                        selector.value = 'v5';
-                                        updateSidebarLinks('v5');
+                                        selector.value = 'v4';
+                                        updateSidebarContent('v4');
                                     }
                                     
                                     selector.addEventListener('change', function(e) {
@@ -114,22 +111,26 @@ export default defineConfig({
                                     });
                                 }
                                 
-                                function updateSidebarLinks(version) {
-                                    var sidebarLinks = document.querySelectorAll('.sidebar-content a');
-                                    sidebarLinks.forEach(function(link) {
-                                        var href = link.getAttribute('href');
-                                        if (href && !href.startsWith('http')) {
-                                            if (!href.startsWith('/' + version + '/')) {
+                                function updateSidebarContent(version) {
+                                    // Update sidebar autogenerate directory by triggering page reload with version
+                                    var sidebarSection = document.querySelector('[data-has-sidebar]');
+                                    if (sidebarSection) {
+                                        // Find all sidebar links and update them
+                                        var sidebarLinks = document.querySelectorAll('.sidebar-content a');
+                                        sidebarLinks.forEach(function(link) {
+                                            var href = link.getAttribute('href');
+                                            if (href && !href.startsWith('http') && !href.startsWith('/api/')) {
                                                 var pathParts = href.split('/').filter(Boolean);
+                                                // Remove any existing version
                                                 if (pathParts[0] === 'v4' || pathParts[0] === 'v5') {
-                                                    pathParts[0] = version;
-                                                } else {
-                                                    pathParts.unshift(version);
+                                                    pathParts.shift();
                                                 }
+                                                // Add new version
+                                                pathParts.unshift(version);
                                                 link.setAttribute('href', '/' + pathParts.join('/'));
                                             }
-                                        }
-                                    });
+                                        });
+                                    }
                                 }
                             });
                         `,
@@ -156,7 +157,7 @@ export default defineConfig({
                 sidebar: [
                     {
                         label: 'Pendahuluan',
-                        autogenerate: { directory: 'v5' },
+                        autogenerate: { directory: 'v4' },
                     },
                 ],
                 expressiveCode: {
@@ -167,7 +168,7 @@ export default defineConfig({
                     nav: [
                         {
                             label: 'Docs',
-                            href: '/v5/tentang-ildis',
+                            href: '/v4/tentang-ildis',
                         },
                         {
                             label: 'Changelog',
