@@ -50,6 +50,69 @@ export default defineConfig({
                             })();
                         `,
                     },
+                    // Version selector styles
+                    {
+                        tag: 'style',
+                        content: `
+                            .version-select-wrapper {
+                                display: flex;
+                                align-items: center;
+                                margin-inline-end: 1rem;
+                            }
+                            .version-select-wrapper select {
+                                background: rgba(255,255,255,0.1);
+                                border: 1px solid rgba(255,255,255,0.2);
+                                border-radius: 0.25rem;
+                                color: var(--sl-color-white);
+                                padding: 0.25rem 0.5rem;
+                                font-size: 0.75rem;
+                                cursor: pointer;
+                            }
+                            .version-select-wrapper select:hover {
+                                background: rgba(255,255,255,0.2);
+                            }
+                        `,
+                    },
+                    // Version selector script
+                    {
+                        tag: 'script',
+                        content: `
+                            document.addEventListener('DOMContentLoaded', function() {
+                                var nav = document.querySelector('.header-bottom-nav');
+                                if (nav) {
+                                    var wrapper = document.createElement('div');
+                                    wrapper.className = 'version-select-wrapper';
+                                    wrapper.innerHTML = '<select id="version-selector"><option value="v5">v5 (Latest)</option><option value="v4">v4</option></select>';
+                                    nav.insertBefore(wrapper, nav.firstChild);
+                                    
+                                    var currentPath = window.location.pathname;
+                                    var selector = document.getElementById('version-selector');
+                                    
+                                    if (currentPath.includes('/v4/')) {
+                                        selector.value = 'v4';
+                                    } else if (currentPath.includes('/v5/')) {
+                                        selector.value = 'v5';
+                                    } else {
+                                        selector.value = 'v5';
+                                    }
+                                    
+                                    selector.addEventListener('change', function(e) {
+                                        var version = e.target.value;
+                                        var currentPath = window.location.pathname;
+                                        
+                                        var pathParts = currentPath.split('/').filter(Boolean);
+                                        
+                                        if (pathParts[0] === 'v4' || pathParts[0] === 'v5') {
+                                            pathParts.shift();
+                                        }
+                                        
+                                        var docPath = pathParts.join('/') || 'tentang-ildis';
+                                        window.location.href = '/' + version + '/' + docPath;
+                                    });
+                                }
+                            });
+                        `,
+                    },
 
                 ],
                 social: [{icon: 'github', label: 'GitHub', href: 'https://github.com/bphndigitalservice/ildis'}],

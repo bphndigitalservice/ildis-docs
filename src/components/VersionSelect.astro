@@ -1,0 +1,56 @@
+---
+// src/components/VersionSelect.astro
+---
+
+<div class="version-select">
+  <select id="version-dropdown" onchange="switchVersion(this.value)">
+    <option value="v5" selected>v5 (Latest)</option>
+    <option value="v4">v4</option>
+  </select>
+</div>
+
+<script>
+  function switchVersion(version) {
+    const currentPath = window.location.pathname;
+    
+    // If already on correct version, do nothing
+    if (currentPath.includes(`/${version}/`) || currentPath === `/${version}`) {
+      return;
+    }
+    
+    // Remove any existing version from path
+    let newPath = currentPath.replace(/^\/(v4|v5)/, '');
+    if (!newPath.startsWith('/')) {
+      newPath = '/' + newPath;
+    }
+    
+    // Redirect to new version
+    window.location.href = `/${version}${newPath}`;
+  }
+</script>
+
+<style>
+  .version-select {
+    display: flex;
+    align-items: center;
+  }
+  
+  .version-select select {
+    background: transparent;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.25rem;
+    color: var(--sl-color-white);
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+  }
+  
+  .version-select select:hover {
+    border-color: var(--sl-color-accent);
+  }
+  
+  .version-select option {
+    background: var(--sl-color-bg);
+    color: var(--sl-color-white);
+  }
+</style>
