@@ -1,0 +1,80 @@
+---
+// src/components/ReleaseBanner.astro
+---
+
+<div id="release-banner" class="release-banner" style="display: none;">
+  <div class="banner-content">
+    <span class="banner-text"></span>
+    <a href="#" class="banner-link" target="_blank" rel="noopener">Lihat Changelog</a>
+  </div>
+</div>
+
+<script>
+  async function loadReleaseBanner() {
+    try {
+      const response = await fetch('/api/releases.json');
+      if (!response.ok) return;
+
+      const data = await response.json();
+      const banner = document.getElementById('release-banner');
+      const bannerText = banner?.querySelector('.banner-text');
+      const bannerLink = banner?.querySelector('.banner-link');
+
+      if (banner && bannerText && bannerLink) {
+        const date = new Date(data.published_at).toLocaleDateString('id-ID', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+        });
+        bannerText.textContent = `ILDIS ${data.tag_name} telah dirilis pada ${date}`;
+        bannerLink.href = data.html_url;
+        banner.style.display = 'block';
+      }
+    } catch (e) {
+      console.error('Failed to load release banner:', e);
+    }
+  }
+
+  loadReleaseBanner();
+</script>
+
+<style>
+  .release-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+    color: white;
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .banner-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .banner-link {
+    color: white;
+    text-decoration: underline;
+    font-weight: 600;
+  }
+
+  .banner-link:hover {
+    color: #e0e7ff;
+  }
+
+  @media (max-width: 640px) {
+    .banner-content {
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+  }
+</style>
