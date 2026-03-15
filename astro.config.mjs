@@ -106,8 +106,12 @@ export default defineConfig({
                                             pathParts.shift();
                                         }
                                         
-                                        var docPath = pathParts.join('/') || 'tentang-ildis';
-                                        window.location.href = '/' + version + '/' + docPath;
+                                        var docPath = pathParts.join('/');
+                                        if (version === 'v5') {
+                                            window.location.href = docPath ? '/' + version + '/' + docPath : '/' + version + '/';
+                                        } else {
+                                            window.location.href = '/' + version + '/' + (docPath || 'tentang-ildis');
+                                        }
                                     });
                                 }
                                 
