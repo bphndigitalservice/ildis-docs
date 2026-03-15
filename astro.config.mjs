@@ -12,7 +12,7 @@ export default defineConfig({
 
     integrations: [
         starlight({
-                title: 'ILDIS v4',
+                title: 'ILDIS',
                 favicon: '/images/favicon.ico',
                 head: [
                     // Add ICO favicon fallback for Safari.
@@ -71,47 +71,14 @@ export default defineConfig({
                 },
                 sidebar: [
                     {
-                        label: 'Pendahuluan',
-                        items: [
-                            {label: 'Tentang ILDIS', link: '/tentang-ildis'},
-                            {label: 'Persyaratan Sistem', link: '/persyaratan-sistem'},
-                        ],
+                        label: 'v5 (Latest)',
+                        translations: { id: 'v5 (Terbaru)' },
+                        autogenerate: { directory: 'v5' },
                     },
                     {
-                        label: 'Instalasi & Konfigurasi',
-                        items: [
-                            {label: 'Instalasi', link: '/instalasi'},
-                            {label: 'Struktur Direktori', link: '/struktur-direktori'},
-                            {label: 'Deployment', link: '/deployment'},
-                            {label: 'Konfigurasi', link: '/konfigurasi'},
-                        ]
+                        label: 'v4',
+                        autogenerate: { directory: 'v4' },
                     },
-                    {
-                        label: 'Integrasi',
-                        items: [
-                            {label: 'JDIHN.go.id', link: '/integrasi/jdihn'},
-                        ],
-                    },
-                    {
-                        label: 'Kustomisasi',
-                        link: '/kustomisasi',
-                    },
-                    {
-                        label: 'Troubleshooting',
-                        autogenerate: {directory: '/troubleshooting/', collapsed: true},
-                    },
-                    {
-                        label: 'Kontribusi',
-                        link: '/kontribusi',
-                    },
-                    {
-                        label: 'Dukungan & Komunitas',
-                        link: '/dukungan-komunitas',
-                    },
-                    {
-                        label: 'Aplikasi Alternative ',
-                        link: '/alternative',
-                    }
                 ],
                 expressiveCode: {
                     useStarlightDarkModeSwitch: true,
@@ -121,7 +88,7 @@ export default defineConfig({
                     nav: [
                         {
                             label: 'Docs',
-                            href: '/tentang-ildis',
+                            href: '/v5/tentang-ildis',
                         },
                         {
                             label: 'Changelog',
