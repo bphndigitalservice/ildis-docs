@@ -18,7 +18,7 @@
       const data = await response.json();
       const banner = document.getElementById('release-banner');
       const bannerText = banner?.querySelector('.banner-text');
-      const bannerLink = banner?.querySelector('.banner-link');
+      const bannerLink = banner?.querySelector('.banner-link') as HTMLAnchorElement | null;
 
       if (banner && bannerText && bannerLink) {
         const date = new Date(data.published_at).toLocaleDateString('id-ID', {
