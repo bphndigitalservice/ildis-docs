@@ -176,6 +176,15 @@ export default defineConfig({
                         ]
                     },
                     {
+                        label: 'Upgrade',
+                        items: [
+                            {label: 'Overview', link: '/v4/upgrade'},
+                            {label: 'Dari v3 ke v4', link: '/v4/upgrade/v3-ke-v4'},
+                            {label: 'Dari v4 ke v5', link: '/v4/upgrade/v4-ke-v5'},
+                            {label: 'Patch Upgrade v4', link: '/v4/upgrade/upgrade-patch'},
+                        ],
+                    },
+                    {
                         label: 'Integrasi',
                         items: [
                             {label: 'JDIHN.go.id', link: '/v4/integrasi/jdihn'},

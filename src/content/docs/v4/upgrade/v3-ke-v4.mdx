@@ -1,0 +1,101 @@
+---
+title: Upgrade dari v3 ke v4
+description: Panduan lengkap upgrade ILDIS dari versi 3 ke versi 4.
+---
+
+import { Aside, Steps, Tabs, TabItem, Code } from '@astrojs/starlight/components';
+
+<Aside type="caution">
+  **Lakukan backup database dan folder aplikasi sebelum upgrade.**
+  Proses upgrade tidak dapat diurungkan.
+</Aside>
+
+## Prerequisites
+
+- PHP 7.4 (atau lebih tinggi)
+- Composer terpasang
+- Git
+- Akses MySQL/MariaDB
+- Backup database v3 sudah tersimpan
+
+## Langkah Upgrade
+
+<Steps>
+
+1. **Backup database v3**
+
+   Export database Anda sebelum memulai:
+
+   <Tabs>
+     <TabItem label="Linux/macOS">
+       ```bash
+       mysqldump -u root -p nama_database_v3 > backup_v3.sql
+       ```
+     </TabItem>
+     <TabItem label="Windows (XAMPP)">
+       ```powershell
+       mysqldump -u root -p nama_database_v3 > C:\backup_v3.sql
+       ```
+     </TabItem>
+   </Tabs>
+
+2. **Unduh kode ILDIS v4**
+
+   Clone repository baru atau gunakan folder terpisah agar instalasi v3 tetap berjalan:
+
+   ```bash
+   git clone https://github.com/bphndigitalservice/ildis.git ildis-v4
+   cd ildis-v4
+   ```
+
+3. **Pasang dependensi**
+
+   ```bash
+   composer install --no-dev --ignore-platform-reqs
+   ```
+
+4. **Inisialisasi aplikasi**
+
+   ```bash
+   php init
+   ```
+
+   Pilih environment yang sesuai (dev atau production).
+
+5. **Konfigurasi `.env`**
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   Edit file `.env` dan sesuaikan konfigurasi database, URL, serta `COOKIE_VALIDATION_KEY_*`.
+
+6. **Import database v4**
+
+   ```bash
+   mysql -u root -p nama_database_v4 < DATABASE/ildis_v4.sql
+   ```
+
+   Selanjutnya, jalankan migrasi untuk menyelaraskan skema v4 dengan data yang ada:
+
+   ```bash
+   php yii migrate/up --interactive=0
+   ```
+
+7. **Konfigurasi virtual host**
+
+   Sesuaikan virtual host Apache/Nginx ke folder `ildis-v4` (lihat halaman [Deployment](/v4/deployment)).
+
+8. **Verifikasi**
+
+   - Buka frontend: http://ildis-frontend.test
+   - Buka backend: http://ildis-backend.test
+   - Pastikan login admin berfungsi
+
+</Steps>
+
+---
+
+## Troubleshooting
+
+Jika mengalami masalah setelah upgrade, lihat halaman [Troubleshooting](/v4/troubleshooting/) atau hubungi [Dukungan & Komunitas](/v4/dukungan-komunitas).

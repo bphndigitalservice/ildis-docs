@@ -20,6 +20,27 @@ import vagrantConfig from './config_example/vagrant?raw'
 
 Instalasi ILDIS pada halaman ini paling menggambarkan kondisi instalasi pada lingkungan pengembangan (_development_). Namun section [instalasi manual](#instalasi-manual-tanpa-vagrant) terutama pada Sistem Operasi Ubuntu dapat mewakili kondisi lingkungan _production_. Anda dapat langsung ke bagian [instalasi manual](#instalasi-manual-tanpa-vagrant) jika anda ingin segera memasang ILDIS pada lingkunga _production_ lalu melihat referensi konfigurasi yang direkomendasikan pada halaman [deployment](/v4/deployment).
 
+<Aside type="tip" title="Rekomendasi: Pasang Cepat (One-Click Install)">
+  **Cara termudah dan paling direkomendasikan** untuk memasang ILDIS adalah menggunakan script `install.sh` (memerlukan Docker atau Podman).
+</Aside>
+
+## Pasang Cepat
+
+Pasang ILDIS dengan satu perintah:
+
+<Code code={`curl -fsSL https://raw.githubusercontent.com/bphndigitalservice/ildis/main/install.sh | bash`} lang="shell" />
+
+Untuk pemasangan non-interaktif (CI/otomatisasi):
+
+<Code code={`curl -fsSL https://raw.githubusercontent.com/bphndigitalservice/ildis/main/install.sh | bash -s -- --non-interactive`} lang="shell" />
+
+Untuk memperbarui instalasi yang ada:
+
+<Code code={`./install.sh --update`} lang="shell" />
+
+<br/>
+<br/>
+---
 
 ## Unduh ILDIS
 
