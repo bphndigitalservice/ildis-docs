@@ -1,0 +1,25 @@
+---
+title: Upgrade ILDIS
+description: Panduan upgrade dan migrasi ILDIS ke versi yang lebih baru.
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+Halaman ini berisi panduan upgrade untuk berbagai jalur versi ILDIS. Sebelum melakukan upgrade, **pastikan Anda telah melakukan backup database dan folder aplikasi**.
+
+<CardGrid>
+  <Card title="v3 ke v4" icon="rocket">
+    Upgrade dari ILDIS versi lama (v3) ke versi stabil terbaru (v4).
+    Estimasi waktu: 30-60 menit.
+    [Lihat panduan →](/v4/upgrade/v3-ke-v4)
+  </Card>
+  <Card title="v4 ke v5" icon="warning">
+    ILDIS v5 sedang dalam perencanaan dan belum tersedia.
+    [Lihat status →](/v4/upgrade/v4-ke-v5)
+  </Card>
+  <Card title="Patch Upgrade v4" icon="setting">
+    Upgrade patch (minor release) dalam jalur versi 4 (contoh: 4.1 → 4.2).
+    Estimasi waktu: 10-20 menit.
+    [Lihat panduan →](/v4/upgrade/upgrade-patch)
+  </Card>
+</CardGrid>
