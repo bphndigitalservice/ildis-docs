@@ -3,7 +3,7 @@ title: Patch Upgrade v4
 description: Panduan upgrade patch (minor release) dalam jalur ILDIS versi 4.
 ---
 
-import { Aside, Steps, Code } from '@astrojs/starlight/components';
+import { Aside, Steps, Code, Tabs, TabItem } from '@astrojs/starlight/components';
 
 <Aside type="caution">
   **Lakukan backup database dan folder aplikasi sebelum setiap upgrade patch.**
@@ -81,3 +81,128 @@ Tabel berikut menyediakan daftar rilis patch ILDIS v4 beserta catatan penting.
 
 - **PHP Requirement**: Minimum PHP 8.3. Jika server Anda masih menggunakan PHP 7.4, upgrade PHP terlebih dahulu sebelum update ILDIS ke v4.2.0.
 - **Mailer**: SwiftMailer digantikan dengan `yii2-symfonymailer`. Pastikan variabel `MAILER_DSN` telah dikonfigurasi di file `.env`.
+
+---
+
+## Panduan Upgrade v4.1 ke v4.2
+
+Upgrade ke v4.2.0 memperkenalkan fitur **Visitor Counter** yang membutuhkan 3 tabel baru di database.
+
+### What's New — Visitor Counter
+
+Fitur ini menyediakan:
+1. `visitor_log` — menyimpan data kunjungan per user
+2. `visitor_stats` — menyimpan agregasi harian/mingguan/bulanan
+3. Menu "Statistik Pengunjung" di backend admin panel
+
+### Pilihan Upgrade
+
+<Tabs>
+  <TabItem label="Opsi A: Via Yii Migrate">
+
+    **Untuk instalasi baru atau yang sudah pakai migrasi.**
+
+    ```bash
+    php yii migrate --interactive=0
+    ```
+
+    Atau spesifik ke path migrasi:
+
+    ```bash
+    php yii migrate/up --interactive=0 --migrationPath=@console/migrations
+    ```
+
+  </TabItem>
+  <TabItem label="Opsi B: Manual SQL">
+
+    **Untuk database lama dari `ildis_v4.sql`.**
+
+    <Aside type="caution">
+      Jika database Anda dibuat dari dump SQL lama, perintah `php yii migrate` bisa gagal karena migrasi baseline (pembuatan tabel yang sudah ada) belum tercatat di tabel `migration`. Gunakan SQL manual ini:
+    </Aside>
+
+    **1. Tabel `visitor_log`:**
+
+    ```sql
+    CREATE TABLE IF NOT EXISTS `visitor_log` (
+      `id` INT(11) NOT NULL AUTO_INCREMENT,
+      `visitor_fingerprint` VARCHAR(64) NOT NULL,
+      `visitor_cookie_id` VARCHAR(64) NOT NULL,
+      `document_id` VARCHAR(100) DEFAULT NULL,
+      `page_url` VARCHAR(500) NOT NULL,
+      `visit_date` DATE NOT NULL,
+      `visit_time` DATETIME NOT NULL,
+      `is_unique` TINYINT(1) NOT NULL DEFAULT 0,
+      `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (`id`),
+      KEY `idx_visitor_log_fingerprint_date` (`visitor_fingerprint`, `visit_date`),
+      KEY `idx_visitor_log_document_date` (`document_id`, `visit_date`),
+      KEY `idx_visitor_log_visit_time` (`visit_time`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    ```
+
+    **2. Tabel `visitor_stats`:**
+
+    ```sql
+    CREATE TABLE IF NOT EXISTS `visitor_stats` (
+      `id` INT(11) NOT NULL AUTO_INCREMENT,
+      `stat_type` ENUM('daily','weekly','monthly','yearly','all_time') NOT NULL,
+      `stat_date` DATE NOT NULL,
+      `document_id` VARCHAR(100) DEFAULT NULL,
+      `total_visits` INT(10) UNSIGNED NOT NULL DEFAULT 0,
+      `unique_visits` INT(10) UNSIGNED NOT NULL DEFAULT 0,
+      `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (`id`),
+      UNIQUE KEY `idx_visitor_stats_type_date_doc` (`stat_type`, `stat_date`, `document_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    ```
+
+    **3. Menu backend:**
+
+    ```sql
+    INSERT INTO `menu` (`name`, `route`, `data`, `order`)
+    VALUES ('Statistik Pengunjung', '/visitor-report/index', '{"icon": "chart-bar"}', 999);
+    ```
+
+  </TabItem>
+</Tabs>
+
+### 4. Verifikasi
+
+Setelah migrasi berhasil:
+
+<Steps>
+
+1. **Cek tabel sudah ada:**
+
+   ```bash
+   mysql -u root -p -e "SHOW TABLES LIKE 'visitor%';" nama_database
+   ```
+
+2. **Cek menu backend** — login ke admin panel, seharusnya ada menu "Statistik Pengunjung" di sidebar.
+
+3. **Cek visitor tracking aktif** — akses frontend, lalu cek browser cookie `__visitor_id`. Cookie ini di-set otomatis oleh component `VisitorCounter`.
+
+4. **Opsional: jalankan agregasi manual** (untuk mengisi statistik awal):
+
+   ```bash
+   php yii visitor/aggregate --days=1
+   ```
+
+</Steps>
+
+### 5. Setup Cron (Production)
+
+Untuk agregasi harian otomatis, tambahkan ke crontab:
+
+```bash
+# Agregasi statistik pengunjung setiap jam 3 pagi
+0 3 * * * cd /path/to/project && php yii visitor/aggregate >> /var/log/visitor_aggregate.log 2>&1
+```
+
+---
+
+## Ringkasan
+
+- **Docker** → `./update.sh` akan otomatis backup database, pull image baru, dan jalankan migrasi.
+- **Manual** → jalankan `php yii migrate`, atau gunakan SQL manual jika migrasi baseline bermasalah.
