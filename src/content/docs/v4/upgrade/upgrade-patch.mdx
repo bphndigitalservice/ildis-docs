@@ -1,0 +1,83 @@
+---
+title: Patch Upgrade v4
+description: Panduan upgrade patch (minor release) dalam jalur ILDIS versi 4.
+---
+
+import { Aside, Steps, Code } from '@astrojs/starlight/components';
+
+<Aside type="caution">
+  **Lakukan backup database dan folder aplikasi sebelum setiap upgrade patch.**
+</Aside>
+
+## Instruksi Umum Upgrade Patch
+
+<Steps>
+
+1. **Backup**
+
+   ```bash
+   mysqldump -u root -p nama_database > backup_$(date +%Y%m%d).sql
+   ```
+
+2. **Pull kode terbaru**
+
+   ```bash
+   git fetch origin
+   git checkout tags/v4.x.x
+   ```
+
+   Atau jika menggunakan branch:
+
+   ```bash
+   git pull origin main
+   ```
+
+3. **Update dependensi**
+
+   ```bash
+   composer install --no-dev
+   ```
+
+4. **Jalankan migrasi (jika ada)**
+
+   ```bash
+   php yii migrate/up --interactive=0
+   ```
+
+5. **Clear cache**
+
+   ```bash
+   php yii cache/flush-all
+   ```
+
+6. **Verifikasi**
+
+   - Buka frontend dan backend
+   - Pastikan fitur utama berjalan normal
+
+</Steps>
+
+---
+
+## Riwayat Rilis v4
+
+Tabel berikut menyediakan daftar rilis patch ILDIS v4 beserta catatan penting.
+
+| Versi | Tanggal Rilis | Changelog | Catatan |
+|-------|---------------|-----------|---------|
+| v4.2.0 | 25 Mei 2026 | [Lihat Release](https://github.com/bphndigitalservice/ildis/releases/tag/v4.2.0) | ⚠ Breaking: butuh PHP ≥8.3, replace SwiftMailer dengan Symfony Mailer |
+| v4.1.4 | 13 Mei 2026 | [Lihat Release](https://github.com/bphndigitalservice/ildis/releases/tag/v4.1.4) | Bug fixes: filter published news |
+| v4.1.3 | 13 Mei 2026 | [Lihat Release](https://github.com/bphndigitalservice/ildis/releases/tag/v4.1.3) | Bug fixes: filter published news |
+| v4.1.2 | 12 Mei 2026 | [Lihat Release](https://github.com/bphndigitalservice/ildis/releases/tag/v4.1.2) | Perbaikan minor |
+| v4.1.0 | — | — | Penambahan dukungan Docker |
+
+> ℹ️ Versi yang tidak memiliki link berarti rilis tersebut tidak dipublikasikan dengan GitHub Release page, atau catatan rilis tersebar dalam repository utama.
+
+---
+
+## Catatan Breaking Change
+
+### v4.2.0
+
+- **PHP Requirement**: Minimum PHP 8.3. Jika server Anda masih menggunakan PHP 7.4, upgrade PHP terlebih dahulu sebelum update ILDIS ke v4.2.0.
+- **Mailer**: SwiftMailer digantikan dengan `yii2-symfonymailer`. Pastikan variabel `MAILER_DSN` telah dikonfigurasi di file `.env`.
