@@ -1,0 +1,35 @@
+---
+title: Pasang Cepat
+description: Instal ILDIS dengan satu perintah menggunakan script otomatis.
+---
+
+import { Code } from '@astrojs/starlight/components';
+import { Aside } from '@astrojs/starlight/components';
+
+Metode **Pasang Cepat** adalah cara termudah dan paling direkomendasikan untuk menjalankan ILDIS. Script ini secara otomatis menggunakan Docker (atau Podman) untuk menyiapkan lingkungan yang dibutuhkan.
+
+## Perintah Pasang Cepat
+
+Pasang ILDIS dengan satu perintah:
+
+<Code code={`curl -fsSL https://raw.githubusercontent.com/bphndigitalservice/ildis/main/install.sh | bash`} lang="shell" />
+
+Untuk pemasangan non-interaktif (CI/otomatisasi):
+
+<Code code={`curl -fsSL https://raw.githubusercontent.com/bphndigitalservice/ildis/main/install.sh | bash -s -- --non-interactive`} lang="shell" />
+
+Untuk memperbarui instalasi yang ada:
+
+<Code code={`./install.sh --update`} lang="shell" />
+
+<Aside type="note">
+  Script ini akan menarik image Docker yang dibutuhkan, mengkonfigurasi container, dan menjalankan ILDIS secara otomatis.
+</Aside>
+
+---
+
+## Langkah Selanjutnya
+
+Setelah instalasi berhasil, lanjutkan ke halaman berikut untuk konfigurasi awal:
+
+- [Langkah Setelah Instalasi](/v4/instalasi/setelah-instalasi)

@@ -1,0 +1,66 @@
+---
+title: Instalasi Manual — Windows (XAMPP)
+description: Instal ILDIS secara manual pada Windows menggunakan XAMPP untuk lingkungan development.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import { Code } from '@astrojs/starlight/components';
+import apache from '../config_example/apache.conf?raw';
+
+<Aside type="caution">
+  Jangan gunakan XAMPP pada lingkungan production.
+</Aside>
+
+## 1. Unduh dan Pasang XAMPP
+
+- Unduh dari [https://www.apachefriends.org/index.html](https://www.apachefriends.org/index.html)
+- Install dengan pilihan default
+- Aktifkan Apache dan MySQL melalui XAMPP Control Panel
+
+## 2. Unduh ILDIS
+
+Clone ILDIS ke dalam folder `htdocs`:
+
+<Code code={`cd C:\\xampp\\htdocs\ngit clone https://github.com/bphndigitalservice/ildis.git ildis`} lang="shell" />
+
+Atau ekstrak file rilis dari [GitHub Releases](https://github.com/bphndigitalservice/ildis/releases)
+
+## 3. Setup Proyek
+
+<Code code={`cd C:\\xampp\\htdocs\\ildis\ncomposer install\nphp init`} lang="powershell" />
+
+## 4. Buat File .env
+
+<Code code={`copy .env.example .env`} lang="powershell" />
+
+Edit file `.env` dan sesuaikan nilai dengan kredensial MySQL / MariaDB Anda.
+
+## 5. Import Database
+
+<Code code={`mysql -u root -p ildis_v4 < DATABASE/ildis_v4.sql`} lang="powershell" />
+
+Atau gunakan phpMyAdmin untuk import manual.
+
+## 6. Buat Virtual Host
+
+Edit file `C:\xampp\apache\conf\extra\httpd-vhosts.conf`, tambahkan:
+
+<Code code={apache} lang="apache" title="httpd-vhosts.conf" />
+
+Edit file hosts:
+
+<Code code={`C:\\Windows\\System32\\drivers\\etc\\hosts`} lang="powershell" title="hosts" />
+
+Tambahkan baris berikut:
+
+<Code code={`127.0.0.1 ildis-frontend.test ildis-backend.test`} lang="text" title="hosts" />
+
+Restart Apache dari XAMPP Control Panel.
+
+---
+
+## Langkah Selanjutnya
+
+Setelah instalasi berhasil, lanjutkan ke halaman berikut untuk konfigurasi awal:
+
+- [Langkah Setelah Instalasi](/v4/instalasi/setelah-instalasi)
