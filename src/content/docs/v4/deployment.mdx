@@ -17,6 +17,55 @@ Halaman ini menjelaskan langkah-langkah dan pertimbangan untuk men-deploy ILDIS 
 
 ---
 
+## Struktur Direktori Instalasi
+
+Setelah instalasi dengan metode Pasang Cepat, berikut adalah struktur direktori yang dibuat di folder instalasi (default: `/opt/ildis`):
+
+| File/Direktori | Keterangan |
+|----------------|-----------|
+| `.env` | Konfigurasi environment — database, port, domain, SSL, reCAPTCHA, cookie key |
+| `docker-compose.yml` | Konfigurasi Docker Compose — mendefinisikan container app, database (db), cron, dan Traefik |
+| `nginx/default.conf` | Konfigurasi Nginx dalam container — routing frontend dan backend |
+| `traefik/traefik.yml` | Konfigurasi utama Traefik — entrypoints, log level, certificates resolver |
+| `traefik/config.yml` | Konfigurasi dinamis Traefik — routing rules dan redirect HTTP→HTTPS |
+| `ssl/` | Direktori untuk sertifikat SSL manual |
+| `logs/nginx/` | Log Nginx — akses dan error log |
+| `logs/traefik/` | Log Traefik — akses dan error log |
+| `VERSION` | File versi ILDIS — digunakan oleh script update |
+| `backups/` | Direktori backup — dibuat saat menjalankan `./install.sh --update` |
+
+### File `.env`
+
+File `.env` adalah konfigurasi utama yang mengatur seluruh aspek ILDIS. Berikut adalah variabel penting yang dapat Anda ubah:
+
+| Variabel | Keterangan | Default |
+|----------|-----------|---------|
+| `YII_ENV` | Lingkungan aplikasi (`dev`, `prod`) | `prod` |
+| `YII_DEBUG` | Mode debug (`true`/`false`) | `false` |
+| `PORT` | Port aplikasi | `8080` |
+| `PUBLIC_DOMAIN` | URL publik aplikasi | `http://localhost:8080` |
+| `DB_TYPE` | Tipe database (`mariadb`, `mysql`, `external`) | `mariadb` |
+| `DB_HOST` | Host database | `db` (nama container) |
+| `DB_USER` | Pengguna database | `ildis` |
+| `DB_PASSWORD` | Kata sandi database | *(dibuat otomatis)* |
+| `DB_DATABASE` | Nama database | `ildis_v4` |
+| `COOKIE_VALIDATION_KEY_BE` | Kunci validasi cookie backend | *(dibuat otomatis)* |
+| `COOKIE_VALIDATION_KEY_FE` | Kunci validasi cookie frontend | *(dibuat otomatis)* |
+| `RECAPTCHA_ENABLED` | Aktifkan reCAPTCHA | `false` |
+| `RECAPTCHA_SITE_KEY` | Kunci publik reCAPTCHA | kosong |
+| `RECAPTCHA_SECRET_KEY` | Kunci rahasia reCAPTCHA | kosong |
+| `BEHIND_REVERSE_PROXY` | Di belakang reverse proxy | `false` |
+| `SSL_MODE` | Mode SSL (`none`, `letsencrypt`, `manual`) | `none` |
+| `SSL_DOMAIN` | Domain untuk SSL | kosong |
+| `ILDIS_IMAGE_TAG` | Tag image Docker | `latest` |
+
+<Aside type="caution">
+  Setelah mengubah file `.env`, jalankan perintah berikut untuk menerapkan perubahan:
+  <Code code={`docker compose -f /opt/ildis/docker-compose.yml --env-file /opt/ildis/.env up -d`} lang="shell" />
+</Aside>
+
+---
+
 ## Environment Production
 
 Pastikan environment variable berikut dikonfigurasi dengan benar untuk production:

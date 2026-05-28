@@ -112,6 +112,34 @@ Script akan secara otomatis:
 
 Proses ini biasanya memakan waktu 3-10 menit tergantung kecepatan internet Anda.
 
+## Struktur Direktori Instalasi
+
+Setelah instalasi berhasil, berikut adalah struktur direktori yang dibuat di folder instalasi (default: `/opt/ildis`):
+
+| File/Direktori | Keterangan |
+|----------------|-----------|
+| `.env` | Konfigurasi environment — database, port, domain, SSL, reCAPTCHA, cookie key |
+| `docker-compose.yml` | Konfigurasi Docker Compose — mendefinisikan container app, database (db), cron, dan Traefik (jika diperlukan) |
+| `nginx/default.conf` | Konfigurasi Nginx dalam container — routing frontend dan backend |
+| `traefik/traefik.yml` | Konfigurasi utama Traefik — entrypoints, log level, certificates resolver (hanya jika tidak menggunakan reverse proxy eksternal) |
+| `traefik/config.yml` | Konfigurasi dinamis Traefik — routing rules dan redirect HTTP→HTTPS (hanya jika tidak menggunakan reverse proxy eksternal) |
+| `ssl/` | Direktori untuk sertifikat SSL manual — berisi `server.crt` dan `server.key` (hanya jika menggunakan SSL manual) |
+| `logs/nginx/` | Log Nginx — akses dan error log |
+| `logs/traefik/` | Log Traefik — akses dan error log (hanya jika menggunakan Traefik) |
+| `VERSION` | File versi ILDIS yang terpasang — digunakan oleh script update |
+| `backups/` | Direktori backup — dibuat saat menjalankan `./install.sh --update` |
+
+Container Docker yang berjalan:
+
+| Container | Keterangan |
+|-----------|-----------|
+| `ildis_app` | Aplikasi ILDIS (frontend + backend) — PHP-FPM + Nginx dalam satu image |
+| `ildis_mariadb` atau `ildis_mysql` | Database — MariaDB 10.11 atau MySQL 8.0 sesuai pilihan saat instalasi |
+| `ildis_cron` | Cron job — menjalankan tugas terjadwal (feed generator, dll) |
+| `ildis_traefik` | Reverse proxy & SSL — Traefik v3 (hanya jika tidak menggunakan reverse proxy eksternal) |
+
+Data persisten disimpan dalam Docker volumes sehingga tidak hilang saat container dihapus atau diperbarui.
+
 ## Langkah 4: Akses Aplikasi
 
 Setelah proses selesai, buka browser dan akses:
