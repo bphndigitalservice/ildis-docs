@@ -1,55 +1,332 @@
 ---
 title: Integrasi / Sinkronisasi dengan Portal JDIHN
-description: Panduan Integrasi / Sinkronisasi dengan Portal JDIHN
+description: Panduan lengkap integrasi ILDIS dengan Portal JDIHN melalui feed JSON terjadwal.
 ---
-import {Code} from "@astrojs/starlight/components";
-import {Aside} from "@astrojs/starlight/components";
 
-Untuk meningkatkan performa dan skalabilitas, ILDIS kini mendukung metode sinkronisasi berbasis file JSON terjadwal. Metode ini lebih efisien karena data tidak perlu di-*generate* setiap kali diakses.
+import { Aside, Steps, Code, Tabs, TabItem } from '@astrojs/starlight/components';
 
-### Langkah-langkah:
+Portal JDIHN (Jaringan Dokumentasi dan Informasi Hukum Nasional) adalah portal pusat yang mengumpulkan data peraturan dari seluruh anggota JDIHN. ILDIS mengirimkan data ke Portal JDIHN melalui **file JSON yang dibuat secara terjadwal** — bukan melalui API push.
 
-#### 1. Buat Cron Job
+## Cara Kerja
 
-Eksekusi perintah berikut menggunakan `cron`, misalnya setiap hari pukul 02:00:
+Arsitektur integrasi menggunakan metode **pull-based**:
 
-<Code language="bash" code={`php /path/to/yii feed/generate-document`} title="Cron Job Command"/>
+1. Cron job di server ILDIS menjalankan perintah `php yii feed/generate-document` setiap hari
+2. Perintah ini menghasilkan file `feed/document.json` berisi seluruh dokumen yang dipublikasikan
+3. File JSON tersedia secara publik di URL `https://<domain>/feed/document.json`
+4. Portal JDIHN mengambil (pull) file JSON tersebut secara berkala
+5. Data diperbarui di portal pusat
 
-Contoh entri di `crontab -e`:
-
-<Code language="bash" code={`0 2 * * * php /path/to/yii feed/generate-document`} title="Cron Job Entri"/>
-
-Perintah ini akan menghasilkan file:
-
-<Code language="bash" code={`/path/to/web/document/feed.json`} title="File JSON"/>
-
-
-#### 2. Pastikan Folder `feed/` Bisa Diakses Publik
-
-Agar dapat diakses oleh JDIHN, file JSON harus tersedia secara publik melalui URL:
-
-<Code language="bash" code={`http://<domain>/feed/document.json`} />
-
-Misalnya:
-
-- `http://ildis-frontend.test/feed/document.json`
-- `https://jdih.kemenkum.go.id/feed/document.json`
-
-> JDIHN akan mengambil data langsung dari file ini tanpa harus memicu query database.
-
-#### 3. Daftarkan URL Feed ke Portal JDIHN
-
-Masuk ke akun anggota JDIHN, kemudian daftarkan URL feed JSON tersebut pada halaman pengaturan akun.
+Keunggulan metode ini dibandingkan API real-time:
+- **Lebih ringan** — query database hanya dijalankan sekali per hari, bukan setiap kali JDIHN meminta data
+- **Lebih cepat** — JDIHN membaca file JSON statis tanpa proses backend tambahan
+- **Lebih stabil** — tidak bergantung pada ketersediaan database saat JDIHN melakukan request
 
 ---
 
-## Keunggulan Metode Baru
+## Format Feed JSON
 
-- **Lebih Cepat** — JDIHN cukup membaca file JSON tanpa proses backend tambahan.
-- **Lebih Ringan** — Mengurangi beban server ILDIS karena query hanya dijalankan sekali.
-- **Lebih Stabil** — Tidak bergantung pada ketersediaan database real-time saat JDIHN melakukan request.
+Feed berupa JSON array yang berisi seluruh dokumen yang dipublikasikan (`is_publish = 1`). Setiap objek memiliki 28 field:
 
-<Aside type="tip">
-    Gunakan metode baru ini untuk integrasi yang lebih modern dan scalable. Metode legacy tetap tersedia hanya untuk kompatibilitas.
+| Field | Tipe | Keterangan |
+|-------|------|------------|
+| `idData` | string | ID dokumen (primary key) |
+| `tahun_pengundangan` | string | Tahun pengundangan (format YYYY) |
+| `tanggal_penetapan` | date | Tanggal penetapan |
+| `tanggal_pengundangan` | date | Tanggal pengundangan |
+| `jenis` | string | Jenis peraturan (contoh: "UNDANG-UNDANG") |
+| `noPeraturan` | string | Nomor peraturan |
+| `judul` | string | Judul dokumen |
+| `noPanggil` | string | Nomor panggil |
+| `singkatanJenis` | string | Singkatan jenis (contoh: "UU") |
+| `tempatTerbit` | string | Tempat terbit |
+| `penerbit` | string | Penerbit |
+| `deskripsiFisik` | string | Deskripsi fisik |
+| `sumber` | string | Sumber (contoh: "BN 2024(1): 100 hlm") |
+| `isbn` | string | ISBN |
+| `status` | string | Status (contoh: "Berlaku") |
+| `bahasa` | string | Bahasa (contoh: "Indonesia") |
+| `bidangHukum` | string | Bidang hukum |
+| `teuBadan` | string | TEU/badan |
+| `nomorIndukBuku` | string | Nomor induk buku |
+| `abstrak` | string | Nama file abstrak (contoh: "tesabstrak.pdf") |
+| `last_updated` | datetime | Timestamp update terakhir |
+| `urlAbstrak` | string | URL lengkap ke file abstrak PDF |
+| `urlDetailPeraturan` | string | URL lengkap ke halaman detail dokumen |
+| `fileDownload` | string | Nama file download (saat ini `"-"`) |
+| `urlDownload` | string | URL download (saat ini `"-"`) |
+| `subjek` | string | Subjek/kata kunci (saat ini kosong) |
+| `operasi` | string | Kode operasi JDIHN (`"4"` = create/update) |
+| `display` | string | Flag visibilitas (`"1"` = tampil) |
+
+### Contoh Feed
+
+```json
+[
+    {
+        "idData": "1",
+        "tahun_pengundangan": "2024",
+        "tanggal_penetapan": "2024-01-01",
+        "tanggal_pengundangan": "2024-01-01",
+        "jenis": "UNDANG-UNDANG",
+        "noPeraturan": "1",
+        "judul": "Undang-Undang tentang Contoh",
+        "singkatanJenis": "UU",
+        "tempatTerbit": "Indonesia",
+        "sumber": "BN 2024(1): 100 hlm",
+        "status": "Berlaku",
+        "bahasa": "Indonesia",
+        "bidangHukum": "Hukum Dagang",
+        "abstrak": "tesabstrak.pdf",
+        "last_updated": "2024-11-15 14:14:51",
+        "urlAbstrak": "https://ildis.example.org/common/dokumen/tesabstrak.pdf",
+        "urlDetailPeraturan": "https://ildis.example.org/dokumen/view?id=1",
+        "fileDownload": "-",
+        "urlDownload": "-",
+        "subjek": "",
+        "operasi": "4",
+        "display": "1"
+    }
+]
+```
+
+<Aside type="note">
+  Field `fileDownload` dan `urlDownload` saat ini diisi `"-"` karena fitur download belum diimplementasi. Field `subjek` dibiarkan kosong. Kedua hal ini akan diisi di versi mendatang.
 </Aside>
 
+---
+
+## Setup Guide
+
+### 1. Konfigurasi URL Aplikasi
+
+Pastikan URL frontend ILDIS sudah dikonfigurasi dengan benar di file `.env` atau konfigurasi Yii2, karena field `urlAbstrak` dan `urlDetailPeraturan` di-generate menggunakan `urlManager->createAbsoluteUrl()`.
+
+Pastikan variabel berikut sesuai dengan domain publik Anda:
+
+```bash
+# .env
+FRONTEND_URL=https://ildis.example.org
+```
+
+Jika URL tidak sesuai, link pada feed JSON akan mengarah ke `http://ildis-frontend.test` (default development) alih-alih domain produksi Anda.
+
+### 2. Buat Cron Job
+
+<Tabs>
+  <TabItem label="Linux (crontab)">
+
+    Jalankan perintah berikut untuk mengedit crontab:
+
+    ```bash
+    crontab -e
+    ```
+
+    Tambahkan baris untuk menjalankan feed generation setiap hari pukul 02:00:
+
+    ```bash
+    # Generate JDIHN feed setiap hari pukul 02:00
+    0 2 * * * php /path/to/ildis/yii feed/generate-document >> /var/log/ildis-feed.log 2>&1
+    ```
+
+    Ganti `/path/to/ildis` dengan path absolut ke instalasi ILDIS Anda.
+
+  </TabItem>
+  <TabItem label="Docker / Podman">
+
+    Jika menggunakan Docker, cron job sudah dikonfigurasi di `docker/cron/crontab`:
+
+    ```bash
+    # Run feed/generate-document every day at 2:00 AM
+    0 2 * * * php /var/www/yii feed/generate-document >> /var/log/cron.log 2>&1
+    ```
+
+    Container `cron` dan `app` berbagi volume `feed_data` yang dipasang di `/var/www/feed`, sehingga file JSON yang dihasilkan langsung tersedia untuk web server.
+
+    Untuk menjalankan manual di luar jadwal:
+
+    ```bash
+    docker compose exec cron php /var/www/yii feed/generate-document
+    ```
+
+  </TabItem>
+  <TabItem label="Vagrant">
+
+    Di lingkungan Vagrant, SSH ke VM dan tambahkan cron job:
+
+    ```bash
+    vagrant ssh
+    sudo crontab -e
+    ```
+
+    Tambahkan:
+
+    ```bash
+    0 2 * * * php /var/www/ildis/yii feed/generate-document >> /var/log/ildis-feed.log 2>&1
+    ```
+
+  </TabItem>
+</Tabs>
+
+### 3. Pastikan Folder `feed/` Bisa Diakses Publik
+
+File JSON harus tersedia secara publik melalui web server. Nginx secara default melayani file di direktori `feed/` sebagai static file.
+
+Verifikasi akses dengan `curl`:
+
+```bash
+curl -I https://ildis.example.org/feed/document.json
+```
+
+Respons yang diharapkan:
+
+```
+HTTP/1.1 200 OK
+Content-Type: application/json
+```
+
+<Aside type="caution">
+  Jika Anda menggunakan Apache atau konfigurasi custom, pastikan direktori `feed/` tidak diblokir oleh `.htaccess` atau aturan rewrite. File `document.json` harus dapat diakses langsung tanpa routing melalui `index.php`.
+</Aside>
+
+### 4. Daftarkan URL Feed ke Portal JDIHN
+
+Setelah feed JSON dapat diakses publik:
+
+1. Login ke akun anggota JDIHN di [portal JDIHN](https://jdihn.bphn.go.id)
+2. Masuk ke halaman pengaturan akun instansi
+3. Daftarkan URL feed: `https://<domain-anda>/feed/document.json`
+4. Simpan konfigurasi
+
+Portal JDIHN akan mulai menarik data dari URL tersebut secara berkala.
+
+---
+
+## Verifikasi
+
+<Steps>
+
+1. **Jalankan perintah feed secara manual**
+
+   ```bash
+   php /path/to/ildis/yii feed/generate-document
+   ```
+
+   Output yang diharapkan:
+
+   ```
+   Dokumen feed berhasil digenerate ke: /path/to/ildis/feed/document.json
+   ```
+
+2. **Cek file JSON ter-generate**
+
+   ```bash
+   ls -la feed/document.json
+   ```
+
+   Pastikan file ada dan ukurannya lebih dari 0 byte.
+
+3. **Validasi format JSON**
+
+   ```bash
+   python3 -m json.tool feed/document.json > /dev/null && echo "Valid JSON" || echo "Invalid JSON"
+   ```
+
+   Atau gunakan `jq`:
+
+   ```bash
+   cat feed/document.json | jq '.[0].idData' 2>/dev/null
+   ```
+
+   Jika output menampilkan ID dokumen, feed JSON valid.
+
+4. **Cek akses publik**
+
+   ```bash
+   curl -s https://ildis.example.org/feed/document.json | head -c 200
+   ```
+
+   Pastikan respons berisi JSON array yang dimulai dengan `[`.
+
+5. **Verifikasi di Portal JDIHN**
+
+   Setelah mendaftarkan URL feed, cek di dashboard JDIHN apakah data sudah masuk. Proses sinkronisasi mungkin membutuhkan waktu hingga 24 jam.
+
+</Steps>
+
+---
+
+## Troubleshooting
+
+### File `document.json` tidak ada
+
+Periksa apakah perintahCLI berjalan dengan benar:
+
+```bash
+php /path/to/ildis/yii feed/generate-document
+```
+
+Jika muncul error database connection, periksa konfigurasi `.env` dan pastikan MySQL/MariaDB berjalan.
+
+### Feed JSON kosong (`[]`)
+
+Feed hanya menyertakan dokumen dengan `is_publish = 1`. Jika array kosong, berarti belum ada dokumen yang dipublikasikan. Publikasikan minimal satu dokumen di backend, lalu jalankan ulang perintah feed.
+
+### Error 403 Forbidden saat mengakses `/feed/document.json`
+
+Periksa permission file dan direktori:
+
+```bash
+chmod -R 775 feed/
+chown -R www-data:www-data feed/
+```
+
+### Error 404 saat mengakses `/feed/document.json`
+
+Pastikan nginx/apache melayani direktori `feed/` sebagai static file. Untuk nginx, konfigurasi `try_files` harus membolehkan akses langsung:
+
+```nginx
+location / {
+    try_files $uri $uri/ /index.php$is_args$args;
+}
+```
+
+### URL `urlAbstrak` atau `urlDetailPeraturan` mengarah ke `ildis-frontend.test`
+
+URL di feed di-generate menggunakan konfigurasi `urlManager` ILDIS. Pastikan variabel `FRONTEND_URL` di `.env` sudah sesuai dengan domain produksi Anda, bukan domain development.
+
+### Cron job tidak berjalan
+
+Periksa log cron:
+
+```bash
+grep CRON /var/log/syslog
+```
+
+Atau cek log ILDIS feed:
+
+```bash
+cat /var/log/ildis-feed.log
+```
+
+Pastikan path di crontab menggunakan path absolut ke `php` dan `yii`:
+
+```bash
+# Gunakan path absolut
+0 2 * * * /usr/bin/php /path/to/ildis/yii feed/generate-document >> /var/log/ildis-feed.log 2>&1
+```
+
+---
+
+## Referensi Teknis
+
+| Komponen | Lokasi |
+|----------|--------|
+| CLI Command | `php yii feed/generate-document` |
+| Controller | `console/controllers/FeedController.php` |
+| Model | `backend/models/DokumenJdih.php` |
+| Output File | `feed/document.json` (alias: `@feed/document.json`) |
+| JSON Schema | `schema/document-schema.json` |
+| Docker Volume | `feed_data` (shared antara `app` dan `cron`) |
+| Cron Schedule (Docker) | `docker/cron/crontab` |
+| Bootstrap Alias | `common/config/bootstrap.php` |

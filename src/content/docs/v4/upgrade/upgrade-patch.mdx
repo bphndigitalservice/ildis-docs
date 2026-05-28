@@ -9,6 +9,10 @@ import { Aside, Steps, Code, Tabs, TabItem } from '@astrojs/starlight/components
   **Lakukan backup database dan folder aplikasi sebelum setiap upgrade patch.**
 </Aside>
 
+<Aside type="caution">
+  **Yii2 menuju End-of-Life akhir 2027.** Migrasi ke Yii3 memerlukan penulisan ulang kode. ILDIS v5 sedang dirancang dengan stack modern — pelajari roadmap di halaman [Upgrade v4 ke v5](/v4/upgrade/v4-ke-v5).
+</Aside>
+
 ## Instruksi Umum Upgrade Patch
 
 <Steps>
@@ -65,9 +69,19 @@ Tabel berikut menyediakan daftar rilis patch ILDIS v4 beserta catatan penting.
 
 | Versi | Tanggal Rilis | Changelog | Catatan |
 |-------|---------------|-----------|---------|
-| v4.2.0 | 25 Mei 2026 | [Lihat Release](https://github.com/bphndigitalservice/ildis/releases/tag/v4.2.0) | ⚠ Breaking: butuh PHP ≥8.3, replace SwiftMailer dengan Symfony Mailer |
-| v4.1.4 | 13 Mei 2026 | [Lihat Release](https://github.com/bphndigitalservice/ildis/releases/tag/v4.1.4) | Bug fixes: filter published news |
-| v4.1.3 | 13 Mei 2026 | [Lihat Release](https://github.com/bphndigitalservice/ildis/releases/tag/v4.1.3) | Bug fixes: filter published news |
+| v4.6.0 | 28 Mei 2026 | [Lihat Release](https://github.com/bphndigitalservice/ildis/releases/tag/v4.6.0) | Footer CMS dinamis, redesign visitor counter, font Inter |
+| v4.5.0 | 28 Mei 2026 | [Lihat Release](https://github.com/bphndigitalservice/ildis/releases/tag/v4.5.0) | Dropdown tahun pada form dokumen, fix double menu dan password reset |
+| v4.4.1 | 28 Mei 2026 | [Lihat Release](https://github.com/bphndigitalservice/ildis/releases/tag/v4.4.1) | Perbaikan minor |
+| v4.4.0 | 28 Mei 2026 | [Lihat Release](https://github.com/bphndigitalservice/ildis/releases/tag/v4.4.0) | Dokumen Pembentukan PUU, `user/create` non-interaktif, Traefik/SSL di install.sh, nginx logging |
+| v4.3.4 | 26 Mei 2026 | [Lihat Release](https://github.com/bphndigitalservice/ildis/releases/tag/v4.3.4) | Logging login failure, docs: Traefik/SSL/superadmin spec |
+| v4.3.3 | 26 Mei 2026 | [Lihat Release](https://github.com/bphndigitalservice/ildis/releases/tag/v4.3.3) | Fix CSP pada halaman login |
+| v4.3.2 | 26 Mei 2026 | [Lihat Release](https://github.com/bphndigitalservice/ildis/releases/tag/v4.3.2) | Fix deteksi `/opt` writable pada install.sh |
+| v4.3.1 | 26 Mei 2026 | [Lihat Release](https://github.com/bphndigitalservice/ildis/releases/tag/v4.3.1) | Fallback direktori jika `/opt/ildis` tidak writable |
+| v4.3.0 | 26 Mei 2026 | [Lihat Release](https://github.com/bphndigitalservice/ildis/releases/tag/v4.3.0) | reCAPTCHA opsional di backend, fix Docker+migrasi |
+| v4.2.1 | 26 Mei 2026 | [Lihat Release](https://github.com/bphndigitalservice/ildis/releases/tag/v4.2.1) | Perbaikan minor |
+| v4.2.0 | 25 Mei 2026 | [Lihat Release](https://github.com/bphndigitalservice/ildis/releases/tag/v4.2.0) | ⚠ Breaking: PHP ≥8.3, install.sh, visitor counter, Symfony Mailer |
+| v4.1.4 | 13 Mei 2026 | [Lihat Release](https://github.com/bphndigitalservice/ildis/releases/tag/v4.1.4) | Perbaikan minor |
+| v4.1.3 | 13 Mei 2026 | [Lihat Release](https://github.com/bphndigitalservice/ildis/releases/tag/v4.1.3) | Fix filter berita yang dipublikasikan |
 | v4.1.2 | 12 Mei 2026 | [Lihat Release](https://github.com/bphndigitalservice/ildis/releases/tag/v4.1.2) | Perbaikan minor |
 | v4.1.0 | — | — | Penambahan dukungan Docker |
 
@@ -86,14 +100,21 @@ Tabel berikut menyediakan daftar rilis patch ILDIS v4 beserta catatan penting.
 
 ## Panduan Upgrade v4.1 ke v4.2
 
-Upgrade ke v4.2.0 memperkenalkan fitur **Visitor Counter** yang membutuhkan 3 tabel baru di database.
+Upgrade ke v4.2.0 memperkenalkan fitur **Visitor Counter** yang membutuhkan tabel baru di database dan perubahan requirement PHP.
 
-### What's New — Visitor Counter
+### Apa yang Baru — Visitor Counter
 
 Fitur ini menyediakan:
 1. `visitor_log` — menyimpan data kunjungan per user
 2. `visitor_stats` — menyimpan agregasi harian/mingguan/bulanan
 3. Menu "Statistik Pengunjung" di backend admin panel
+
+### Apa yang Baru — install.sh (One-Click Install)
+
+v4.2.0 memperkenalkan `install.sh` yang mendukung:
+- Instalasi Docker/Podman otomatis
+- Generasi `.env` dan `docker-compose.yml`
+- Skrip `update.sh` untuk update non-teknis
 
 ### Pilihan Upgrade
 
@@ -103,7 +124,7 @@ Fitur ini menyediakan:
     **Untuk instalasi baru atau yang sudah pakai migrasi.**
 
     ```bash
-    php yii migrate --interactive=0
+    php yii migrate/up --interactive=0
     ```
 
     Atau spesifik ke path migrasi:
@@ -167,7 +188,7 @@ Fitur ini menyediakan:
   </TabItem>
 </Tabs>
 
-### 4. Verifikasi
+### Verifikasi
 
 Setelah migrasi berhasil:
 
@@ -191,7 +212,7 @@ Setelah migrasi berhasil:
 
 </Steps>
 
-### 5. Setup Cron (Production)
+### Setup Cron (Production)
 
 Untuk agregasi harian otomatis, tambahkan ke crontab:
 
@@ -202,7 +223,127 @@ Untuk agregasi harian otomatis, tambahkan ke crontab:
 
 ---
 
+## Panduan Upgrade v4.3 ke v4.4
+
+v4.4.0 memperkenalkan fitur **Dokumen Pembentukan PUU** dan peningkatan signifikan pada `install.sh`.
+
+### Apa yang Baru — Dokumen Pembentukan PUU
+
+Fitur ini menyediakan:
+1. Manajemen Dokumen Pembentukan PUU di backend dengan CRUD ter-scoped
+2. URL berbasis slug untuk halaman publik Dokumen Pembentukan PUU
+3. Menu sidebar "Dokumen Pembentukan PUU" di bawah "Dokumen Hukum"
+4. RBAC migration untuk akses controller dan menu entry
+
+### Apa yang Baru — install.sh
+
+Peningkatan signifikan pada skrip instalasi:
+1. Integrasi Traefik reverse proxy dan SSL otomatis
+2. Pembuatan superadmin saat instalasi
+3. Konfigurasi nginx dengan access log dan error log
+4. `user/create` CLI non-interaktif (mendukung flag `--interactive=0`)
+
+### Pilihan Upgrade
+
+<Tabs>
+  <TabItem label="Opsi A: Via Yii Migrate">
+
+    ```bash
+    php yii migrate/up --interactive=0
+    ```
+
+    Migrasi ini akan menambahkan:
+    - Tabel dan RBAC untuk Dokumen Pembentukan PUU
+    - Menu sidebar untuk Dokumen Pembentukan PUU
+
+  </TabItem>
+  <TabItem label="Opsi B: Docker/Podman">
+
+    Jika menggunakan instalasi Docker/Podman:
+
+    ```bash
+    ./install.sh --update
+    ```
+
+    Skrip akan otomatis menjalankan migrasi setelah pull image baru.
+
+  </TabItem>
+</Tabs>
+
+### Verifikasi
+
+Setelah upgrade:
+
+<Steps>
+
+1. **Cek menu Dokumen Pembentukan PUU** — login ke backend, buka sidebar, seharusnya ada menu "Dokumen Pembentukan PUU" di bawah "Dokumen Hukum".
+
+2. **Cek CRUD** — buat, baca, update, hapus entri Dokumen Pembentukan PUU untuk memastikan RBAC berjalan.
+
+3. **Cek frontend** — akses halaman publik Dokumen Pembentukan PUU via URL berbasis slug.
+
+</Steps>
+
+---
+
+## Panduan Upgrade v4.5 ke v4.6
+
+v4.6.0 memperkenalkan **Footer CMS** dan **redesign Visitor Counter**.
+
+### Apa yang Baru — Footer CMS
+
+Fitur ini menyediakan:
+1. `footer_section` dan `footer_link` — tabel untuk mengelola section dan link footer secara dinamis dari backend
+2. Menu "Footer Section" dan "Footer Link" di sidebar admin
+3. Query caching dengan invalidation untuk footer sections
+4. Seed data bawaan untuk footer section dan footer link
+
+### Apa yang Baru — Visitor Counter Redesign
+
+- Tampilan visitor counter di frontend di-redesign
+- Font diubah ke Inter (menggantikan font sebelumnya)
+
+### Pilihan Upgrade
+
+<Tabs>
+  <TabItem label="Opsi A: Via Yii Migrate">
+
+    ```bash
+    php yii migrate/up --interactive=0
+    ```
+
+    Migrasi ini akan menambahkan:
+    - Tabel `footer_section` dan `footer_link` dengan seed data
+    - Menu backend untuk manajemen footer
+
+  </TabItem>
+  <TabItem label="Opsi B: Docker/Podman">
+
+    ```bash
+    ./install.sh --update
+    ```
+
+  </TabItem>
+</Tabs>
+
+### Verifikasi
+
+Setelah upgrade:
+
+<Steps>
+
+1. **Cek menu Footer** — login ke backend, seharusnya ada menu "Footer Section" dan "Footer Link" di sidebar.
+
+2. **Cek frontend footer** — buka frontend, seharusnya footer menampilkan section dan link dinamis (bukan hard-coded).
+
+3. **Cek visitor counter** — buka frontend, seharusnya visitor counter tampil dengan desain baru dan font Inter.
+
+</Steps>
+
+---
+
 ## Ringkasan
 
-- **Docker** → `./update.sh` akan otomatis backup database, pull image baru, dan jalankan migrasi.
-- **Manual** → jalankan `php yii migrate`, atau gunakan SQL manual jika migrasi baseline bermasalah.
+- **Docker/Podman** → `./install.sh --update` akan otomatis backup database, pull image baru, dan jalankan migrasi.
+- **Manual** → jalankan `php yii migrate/up --interactive=0`, atau gunakan SQL manual jika migrasi baseline bermasalah.
+- Selalu cek tabel riwayat rilis di atas untuk mengetahui apakah versi tertentu membutuhkan migrasi database atau langkah tambahan.

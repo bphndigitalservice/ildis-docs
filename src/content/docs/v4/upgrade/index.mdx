@@ -8,18 +8,18 @@ import { Card, CardGrid } from '@astrojs/starlight/components';
 Halaman ini berisi panduan upgrade untuk berbagai jalur versi ILDIS. Sebelum melakukan upgrade, **pastikan Anda telah melakukan backup database dan folder aplikasi**.
 
 <CardGrid>
+  <Card title="Patch Upgrade v4" icon="setting">
+    Upgrade ke versi terbaru dalam jalur v4 (contoh: 4.1.3 → 4.1.4 atau 4.1 → 4.2).
+    Estimasi waktu: 10-20 menit.
+    [Lihat panduan →](/v4/upgrade/upgrade-patch)
+  </Card>
   <Card title="v3 ke v4" icon="rocket">
     Upgrade dari ILDIS versi lama (v3) ke versi stabil terbaru (v4).
     Estimasi waktu: 30-60 menit.
     [Lihat panduan →](/v4/upgrade/v3-ke-v4)
   </Card>
   <Card title="v4 ke v5" icon="warning">
-    ILDIS v5 sedang dalam perencanaan dan belum tersedia.
-    [Lihat status →](/v4/upgrade/v4-ke-v5)
-  </Card>
-  <Card title="Patch Upgrade v4" icon="setting">
-    Upgrade ke versi terbaru dalam jalur v4 (contoh: 4.1.3 → 4.1.4 atau 4.1 → 4.2).
-    Estimasi waktu: 10-20 menit.
-    [Lihat panduan →](/v4/upgrade/upgrade-patch)
+    Yii2 EOL akhir 2027, migrasi ke Yii3 tidak mulus. Pelajari timeline dan rencana stack baru ILDIS v5.
+    [Pelajari →](/v4/upgrade/v4-ke-v5)
   </Card>
 </CardGrid>

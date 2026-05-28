@@ -1,23 +1,91 @@
 ---
 title: Dukungan & Komunitas
-description: 'Forum diskusi, grup komunitas, dan dukungan teknis ILDIS'
+description: 'Channel dukungan teknis, komunitas, dan kontribusi ILDIS'
 ---
 
-Untuk mendapatkan bantuan, berbagi pengalaman, atau berdiskusi dengan pengguna dan pengembang ILDIS dalam naungan Jaringan JDIHN, Anda dapat bergabung ke grup komunitas ILDIS.
+import { Card, CardGrid, Aside } from '@astrojs/starlight/components';
 
-Anda dapat berdiskusi terkait fitur, permasalahan, bug dan lainnya melalui:
+ILDIS dikembangkan dalam ekosistem JDIHN dan didukung oleh komunitas pengguna serta pengembang. Halaman ini menjelaskan berbagai cara untuk mendapatkan bantuan, melaporkan masalah, dan berdiskusi dengan sesama pengguna.
 
-- [GitHub Discussion](https://github.com/bphndigitalservice/ildis/discussions)
-- **WhatsApp**: [Grup Komunitas ILDIS](https://chat.whatsapp.com/KvUHasGEH4I4xwWHPjWzu8)
-- **Email**: it.dev@bphn.go.id untuk dukungan teknis
+---
 
-Melalui grup ini, Anda bisa:
+## Channel Dukungan
 
-- Mendapatkan bantuan teknis dari sesama pengguna dan pengembang
-- Berbagi ide pengembangan fitur baru
-- Mendapatkan informasi pembaruan versi ILDIS
-- Berdiskusi mengenai praktik terbaik pengelolaan dokumentasi hukum
+<CardGrid>
+  <Card title="GitHub Discussions" icon="github">
+    Forum diskusi untuk pertanyaan teknis, ide fitur, dan arsitektur v5.
+    [Buka Discussions →](https://github.com/bphndigitalservice/ildis/discussions)
+  </Card>
+  <Card title="WhatsApp" icon="chat">
+    Grup komunitas untuk diskusi cepat dan bantuan sesama pengguna.
+    [Gabung Grup →](https://chat.whatsapp.com/KvUHasGEH4I4xwWHPjWzu8)
+  </Card>
+  <Card title="Email" icon="mail">
+    Dukungan teknis langsung dari tim pengembang BPHN untuk masalah yang memerlukan koordinasi resmi.
+    [it.dev@bphn.go.id](mailto:it.dev@bphn.go.id)
+  </Card>
+</CardGrid>
 
-Kami sangat mendorong partisipasi aktif dari seluruh anggota JDIHN untuk memperkuat kolaborasi dan mendukung pengembangan ILDIS secara berkelanjutan.
+---
 
-> **Catatan**: Untuk menjaga kualitas diskusi dan efektivitas dukungan, kami sangat menyarankan agar anggota yang bergabung paling tidak memiliki pengalaman atau kompetensi dasar dalam pengelolaan server dan/atau pengembangan web. ILDIS ditujukan untuk digunakan dan dikembangkan secara mandiri oleh anggota JDIHN yang memiliki infrastruktur sendiri.
+## Melaporkan Bug
+
+Jika Anda menemukan bug atau masalah keamanan, buat issue di GitHub:
+
+[Buka Issue Baru →](https://github.com/bphndigitalservice/ildis/issues/new)
+
+Sertakan informasi berikut dalam laporan Anda:
+
+- **Versi ILDIS** — dilihat dari halaman backend atau file `VERSION`
+- **Langkah reproduksi** — langkah-langkah detail untuk mereproduksi masalah
+- **Perilaku yang diharapkan** vs **perilaku aktual**
+- **Screenshot atau log** jika tersedia
+- **Lingkungan** — OS, versi PHP, versi Docker (jika menggunakan)
+
+<Aside type="tip">
+  Untuk kerentanan keamanan, gunakan fitur [GitHub Security Advisory](https://github.com/bphndigitalservice/ildis/security/advisories/new) alih-alih issue publik.
+</Aside>
+
+---
+
+## Mengajukan Fitur
+
+Punya ide untuk fitur baru? Bagikan di GitHub Discussions:
+
+1. Periksa apakah ide serupa sudah pernah diajukan di [Discussions](https://github.com/bphndigitalservice/ildis/discussions)
+2. Buat diskusi baru dengan kategori **Ide**
+3. Jelaskan masalah yang ingin diselesaikan dan solusi yang Anda bayangkan
+4. Sertakan use case spesifik dari instansi Anda
+
+Tim pengembang akan meninjau setiap proposal dan memberikan respons.
+
+---
+
+## Diskusi Arsitektur v5
+
+ILDIS v5 sedang dalam tahap perencanaan arsitektur. Ini adalah momen untuk mempengaruhi arah pengembangan:
+
+- **Bagikan pengalaman operasional** — pain point apa yang Anda hadapi dengan v4?
+- **Usulkan persyaratan** — fitur atau prilaku apa yang harus ada di v5?
+- **Review proposal** — saat proposal arsitektur dipublikasikan, berikan masukan
+
+Pelajari timeline dan prinsip desain v5 di halaman [Upgrade v4 ke v5](/v4/upgrade/v4-ke-v5).
+
+---
+
+## Dukungan Teknis
+
+Untuk masalah yang memerlukan koordinasi langsung dengan tim BPHN:
+
+- **Dukungan teknis umum**: it.dev@bphn.go.id
+- **Anggota JDIHN**: Hubungi koordinator JDIHN instansi Anda
+
+<Aside type="note">
+  ILDIS ditujukan untuk digunakan dan dikembangkan secara mandiri oleh anggota JDIHN yang memiliki infrastruktur sendiri. Kami sangat mendorong partisipasi aktif dari seluruh anggota untuk memperkuat kolaborasi dan mendukung pengembangan ILDIS secara berkelanjutan.
+</Aside>
+
+---
+
+## Berkontribusi
+
+Ingin berkontribusi pada kode ILDIS? Lihat panduan lengkap di halaman [Kontribusi](/v4/kontribusi).

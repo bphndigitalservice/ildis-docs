@@ -1,26 +1,114 @@
 ---
 title: Upgrade dari v4 ke v5
-description: Status upgrade ILDIS dari versi 4 ke versi 5.
+description: Timeline Yii2 EOL, alasan migrasi, dan roadmap ILDIS v5.
 ---
 
-import { Aside, Card, CardGrid } from '@astrojs/starlight/components';
+import { Aside, Steps, Card, CardGrid } from '@astrojs/starlight/components';
 
-<Aside type="caution">
-  ILDIS v5 sedang dalam perencanaan dan **belum masuk tahap pengembangan aktif**.
-  Panduan upgrade versi ini akan tersedia setelah rilis resmi diumumkan.
+<Aside type="danger">
+  **Yii2 sudah memasuki fase akhir siklus hidup.** Yii2 saat ini hanya menerima perbaikan keamanan dan kompatibilitas PHP, dan akan mencapai **End-of-Life pada akhir 2027**. Migrasi ke Yii3 tidak dimungkinkan secara mulus — memerlukan penulisan ulang kode. ILDIS v5 akan dibangun dengan stack modern yang dipilih secara terbuka.
 </Aside>
 
-## Status Pengembangan
+## Timeline Siklus Hidup Yii2
 
-Tim ILDIS sedang mempersiapkan arsitektur dan perencanaan untuk versi 5. Saat ini, versi stabil yang direkomendasikan adalah **ILDIS v4**.
+ILDIS v4 dibangun di atas [Yii2 Framework](https://www.yiiframework.com/release-cycle). Berikut timeline siklus hidup Yii2 versi `>=2.0.50`:
 
-## Tetap Terinformasi
+| Fase | Periode | Keterangan |
+|------|---------|------------|
+| Active support | S.d. 30 Mei 2024 | Fitur baru, perbaikan bug, dan keamanan |
+| Feature freeze | 30 Mei 2024 | Hanya bug fix dan keamanan |
+| Security & PHP compat only | Mei 2024 — Nov 2026 | Hanya perbaikan keamanan dan kompatibilitas PHP |
+| **End of Life** | **23 November 2027** | **Tanpa dukungan sama sekali** |
+
+Saat ini (Mei 2026), Yii2 berada di fase **"Security & PHP compatibility fixes only"** — artinya masih menerima patch keamanan, tetapi tidak ada fitur baru atau perbaikan bug non-kritis. Fase ini berlangsung hingga November 2026, setelahnya menuju EOL penuh pada akhir 2027.
+
+Penerus Yii2 — **Yii3** — sudah dirilis sejak Desember 2025, namun migrasi dari Yii2 ke Yii3 memerlukan penulisan ulang kode secara menyeluruh dan tidak dapat dilakukan secara mulus. Oleh karena itu, ILDIS v5 membuka opsi seluas-luasnya untuk memilih tech stack lain yang modern, stabil, berkomunitas luas, dan aman — bukan terbatas pada keluarga Yii.
+
+---
+
+## Mengapa Migrasi ke v5
+
+### Keamanan
+
+Yii2 saat ini hanya menerima perbaikan keamanan dan kompatibilitas PHP. CVE pada dependensi terus muncul, dan setelah EOL akhir 2027, tidak akan ada patch sama sekali. Sistem harus bermigrasi ke stack yang aktif di-maintain untuk tetap aman.
+
+### Kesulitan Update
+
+Dependensi lama mengunci versi PHP, library, dan composer packages. Setiap update memerlukan migrasi database manual dan penyesuaian kode yang tidak trivial. Mekanisme update yang lebih andal diperlukan.
+
+### Sistem Harus Beradaptasi
+
+Regulasi berubah, kebutuhan pengguna meningkat, dan tantangan keamanan terus muncul. Stack yang digunakan harus mampu mengikuti perubahan tanpa rewrite total setiap beberapa tahun.
+
+### Ekosistem Modern
+
+Tooling PHP modern (dependency management, CI/CD, automated testing, container-first deployment) memudahkan maintenance dan mempercepat respons terhadap CVE.
+
+---
+
+## Prinsip Desain v5
+
+ILDIS v5 dirancang dengan empat prinsip utama:
 
 <CardGrid>
-  <Card title="GitHub Releases" icon="github">
-    Pantau rilis terbaru di [GitHub Releases](https://github.com/bphndigitalservice/ildis/releases).
+  <Card title="Migrasi Lancar" icon="right-arrow">
+    Data dan konfigurasi v4 dapat dipindahkan ke v5 tanpa manual export/import. Proses migrasi terautomasi.
   </Card>
-  <Card title="Dukungan & Komunitas" icon="star">
-    Hubungi tim melalui halaman [Dukungan & Komunitas](/v4/dukungan-komunitas) untuk pertanyaan roadmap.
+  <Card title="Instalasi Mudah" icon="download">
+    One-click install tetap tersedia (install.sh / Docker), sama seperti v4 saat ini.
+  </Card>
+  <Card title="Update Otomatis" icon="refresh">
+    Mekanisme update yang lebih andal dengan kemampuan rollback. Tidak perlu SSH manual ke server.
+  </Card>
+  <Card title="Keamanan Berkelanjutan" icon="shield">
+    Stack yang dipilih memiliki dukungan jangka panjang (LTS) dan respons CVE yang cepat.
   </Card>
 </CardGrid>
+
+---
+
+## Status Saat Ini
+
+<Aside type="note">
+  Arsitektur v5 masih dalam tahap **perencanaan dan desain**. Framework dan stack teknologi belum dipilih. Halaman ini akan diperbarui seiring progres pengembangan.
+</Aside>
+
+---
+
+## Yang Bisa Dilakukan Sekarang
+
+<Steps>
+
+1. **Tetap update patch v4**
+
+   Pastikan ILDIS v4 selalu pada versi terbaru. Yii2 masih menerima patch keamanan hingga akhir 2027, jadi menjaga versi terbaru adalah langkah terbaik saat ini.
+
+   ```bash
+   ./install.sh --update
+   ```
+
+   Atau manual:
+
+   ```bash
+   git pull origin main
+   composer install --no-dev
+   php yii migrate/up --interactive=0
+   php yii cache/flush-all
+   ```
+
+2. **Pantau rilis baru**
+
+   Ikuti [GitHub Releases](https://github.com/bphndigitalservice/ildis/releases) untuk mengetahui update v4 dan pengumuman v5.
+
+3. **Berpartisipasi dalam diskusi arsitektur v5**
+
+   Bagikan use case dan kebutuhan instansi Anda di [GitHub Discussions](https://github.com/bphndigitalservice/ildis/discussions) atau hubungi tim melalui halaman [Kontribusi](/v4/kontribusi).
+
+4. **Hubungi tim pengembang**
+
+   Untuk pertanyaan teknis atau diskusi roadmap:
+
+   - **Email**: it.dev@bphn.go.id
+   - **GitHub Discussions**: [bphndigitalservice/ildis/discussions](https://github.com/bphndigitalservice/ildis/discussions)
+
+</Steps>
