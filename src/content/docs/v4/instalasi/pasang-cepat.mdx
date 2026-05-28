@@ -1,35 +1,195 @@
 ---
-title: Pasang Cepat
-description: Instal ILDIS dengan satu perintah menggunakan script otomatis.
+title: Pasang Cepat (One-Click Install)
+description: Instal ILDIS dengan satu perintah menggunakan script otomatis. Cara termudah dan paling direkomendasikan.
 ---
 
 import { Code } from '@astrojs/starlight/components';
 import { Aside } from '@astrojs/starlight/components';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-Metode **Pasang Cepat** adalah cara termudah dan paling direkomendasikan untuk menjalankan ILDIS. Script ini secara otomatis menggunakan Docker (atau Podman) untuk menyiapkan lingkungan yang dibutuhkan.
+Metode **Pasang Cepat** adalah cara termudah dan paling direkomendasikan untuk menjalankan ILDIS. Cukup satu perintah, dan script instalasi akan menangani semuanya — mulai dari menyiapkan database, mengkonfigurasi container, hingga membuat akun admin Anda.
 
-## Perintah Pasang Cepat
+<Aside type="tip" title="Butuh bantuan teknis?">
+  Jika Anda mengalami kendala selama instalasi, hubungi tim IT kami di **it.dev@bphn.go.id** untuk respons teknis yang lebih cepat.
+</Aside>
 
-Pasang ILDIS dengan satu perintah:
+---
+
+## Apa Itu Docker?
+
+Docker adalah teknologi yang mengemas aplikasi beserta seluruh dependensinya ke dalam sebuah **container** — bayangkan seperti kotak yang sudah berisi semua yang dibutuhkan agar aplikasi bisa berjalan, terpisah dari sistem Anda. Dengan Docker, Anda tidak perlu memasang PHP, MySQL, Nginx, atau konfigurasi server secara manual satu per satu.
+
+**Analogi sederhana:** Jika instalasi manual ibarat membangun rumah dari bata dan semen, instalasi dengan Docker ibarat memesan rumah prefab yang sudah jadi — tinggal pakai.
+
+Podman adalah alternatif Docker yang kompatibel dan bisa digunakan sebagai pengganti.
+
+## Prasyarat
+
+Sebelum memulai, pastikan perangkat Anda memenuhi hal berikut:
+
+- **Docker** atau **Podman** sudah terpasang — [Pasang Docker](https://docs.docker.com/engine/install/) · [Pasang Podman](https://podman.io/getting-started/installation)
+- **Ruang disk** minimal 1 GB tersedia
+- **Port 8080** tidak digunakan oleh aplikasi lain (atau siap untuk diubah)
+- **Koneksi internet** stabil (untuk mengunduh image ILDIS)
+
+<Tabs>
+  <TabItem label="Linux (Ubuntu/Debian)">
+    <Code code={`# Pasang Docker\nsudo apt-get update\nsudo apt-get install -y ca-certificates curl\nsudo install -m 0755 -d /etc/apt/keyrings\nsudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc\nsudo chmod a+r /etc/apt/keyrings/docker.asc\necho "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo $VERSION_CODENAME) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null\nsudo apt-get update\nsudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin\n\n# Tambahkan user Anda ke grup Docker (agar tanpa sudo)\nsudo usermod -aG docker $USER\nnewgrp docker`} lang="shell" title="Pasang Docker di Ubuntu" />
+  </TabItem>
+  <TabItem label="macOS">
+    Unduh dan pasang [Docker Desktop untuk Mac](https://docs.docker.com/desktop/setup/install/mac-install/).
+
+    Atau gunakan Homebrew:
+
+    <Code code={`brew install --cask docker`} lang="shell" />
+  </TabItem>
+  <TabItem label="Windows">
+    Unduh dan pasang [Docker Desktop untuk Windows](https://docs.docker.com/desktop/setup/install/windows-install/).
+
+    Pastikan WSL 2 sudah aktif. Docker Desktop akan mengaturnya secara otomatis.
+  </TabItem>
+</Tabs>
+
+<Aside type="note">
+  Jika Anda sudah memiliki Docker atau Podman terpasang, Anda bisa langsung lanjut ke langkah instalasi di bawah.
+</Aside>
+
+---
+
+## Langkah 1: Jalankan Perintah Instalasi
+
+Buka terminal dan jalankan perintah berikut:
 
 <Code code={`curl -fsSL https://raw.githubusercontent.com/bphndigitalservice/ildis/main/install.sh | bash`} lang="shell" />
 
-Untuk pemasangan non-interaktif (CI/otomatisasi):
+Perintah ini akan mengunduh dan menjalankan script instalasi ILDIS secara otomatis.
 
-<Code code={`curl -fsSL https://raw.githubusercontent.com/bphndigitalservice/ildis/main/install.sh | bash -s -- --non-interactive`} lang="shell" />
+## Langkah 2: Ikuti Panduan Interaktif
 
-Untuk memperbarui instalasi yang ada:
+Script akan menampilkan panduan interaktif yang memandu Anda melalui konfigurasi. Berikut adalah hal-hal yang akan ditanyakan:
+
+### Direktori dan Port
+
+- **Direktori instalasi** — Lokasi folder untuk menyimpan file ILDIS. Default: `/opt/ildis` (atau `./ildis` jika tidak memiliki akses).
+- **Port aplikasi** — Port yang digunakan untuk mengakses ILDIS. Default: `8080`.
+
+### Konfigurasi Jaringan
+
+- **Reverse proxy** — Apakah ILDIS berjalan di belakang reverse proxy (Nginx, Apache, Traefik lain)? Jika tidak, script akan menyiapkan Traefik secara otomatis.
+- **SSL/TLS** — Pilih salah satu:
+  - **Tidak ada** — HTTP saja (cocok untuk development/local)
+  - **Let's Encrypt** — Sertifikat otomatis (perlu domain publik)
+  - **Manual** — Gunakan sertifikat SSL sendiri
+
+### Tipe Database
+
+Pilih salah satu:
+1. **MariaDB 10.11** (direkomendasikan, bawaan)
+2. **MySQL 8.0**
+3. **Database eksternal** — Jika Anda sudah memiliki server database sendiri
+
+Untuk MariaDB dan MySQL, kata sandi database akan dibuat secara otomatis. Untuk database eksternal, Anda perlu memasukkan host, port, pengguna, dan kata sandi.
+
+### Akun Superadmin
+
+Buat username dan password untuk akun admin pertama Anda. Password minimal 8 karakter. Akun ini digunakan untuk login ke halaman backend ILDIS.
+
+### reCAPTCHA
+
+Aktifkan atau nonaktifkan Google reCAPTCHA pada halaman login backend. Untuk instalasi lokal/development, sebaiknya pilih **nonaktif** — Anda bisa mengaktifkannya nanti melalui file `.env`.
+
+## Langkah 3: Tunggu Proses Selesai
+
+Script akan secara otomatis:
+
+1. **Memeriksa prasyarat** — Mendeteksi Docker/Podman, memeriksa ruang disk, dan port yang tersedia
+2. **Mengunduh image ILDIS** — Dari GitHub Container Registry (`ghcr.io/bphndigitalservice/ildis:latest`)
+3. **Membuat konfigurasi** — File `.env`, `docker-compose.yml`, dan konfigurasi nginx/Traefik
+4. **Menjalankan container** — Aplikasi, database, dan reverse proxy (jika diperlukan)
+5. **Menunggu database siap** — Healthcheck otomatis hingga database dapat menerima koneksi
+6. **Menjalankan migrasi database** — `php yii migrate/up` untuk membuat skema tabel
+7. **Membuat akun superadmin** — Menggunakan perintah `php yii user/create`
+
+Proses ini biasanya memakan waktu 3-10 menit tergantung kecepatan internet Anda.
+
+## Langkah 4: Akses Aplikasi
+
+Setelah proses selesai, buka browser dan akses:
+
+- **Frontend**: `http://localhost:8080`
+- **Backend (Admin)**: `http://localhost:8080/backend`
+
+Jika Anda mengkonfigurasi domain dan SSL, ganti `localhost:8080` dengan domain Anda (misalnya `https://ildis.example.com`).
+
+Login ke backend menggunakan akun superadmin yang Anda buat pada Langkah 2.
+
+---
+
+## Mode Non-Interaktif (CI/Otomatisasi)
+
+Untuk pemasangan tanpa interaksi (misalnya di CI/CD pipeline), gunakan flag `--non-interactive` bersama variabel lingkungan:
+
+<Code code={`INSTALL_DIR=/opt/ildis \\\nPORT=8080 \\\nDB_TYPE=mariadb \\\nDB_PASSWORD=yourpassword \\\nADMIN_USERNAME=admin \\\nADMIN_PASSWORD=yoursecurepassword \\\ncurl -fsSL https://raw.githubusercontent.com/bphndigitalservice/ildis/main/install.sh | bash -s -- --non-interactive`} lang="shell" />
+
+Variabel lingkungan yang tersedia:
+
+| Variabel | Keterangan | Default |
+|----------|-----------|---------|
+| `INSTALL_DIR` | Direktori instalasi | `/opt/ildis` |
+| `PORT` | Port aplikasi | `8080` |
+| `PUBLIC_DOMAIN` | URL publik | `http://localhost:8080` |
+| `DB_TYPE` | Tipe database: `mariadb`, `mysql`, `external` | `mariadb` |
+| `DB_PASSWORD` | Kata sandi database | *(dibuat otomatis)* |
+| `DB_USER` | Pengguna database | `ildis` |
+| `DB_DATABASE` | Nama database | `ildis_v4` |
+| `ADMIN_USERNAME` | Username superadmin | `admin` |
+| `ADMIN_PASSWORD` | Password superadmin | *(wajib diisi)* |
+| `RECAPTCHA_ENABLED` | Aktifkan reCAPTCHA | `false` |
+
+---
+
+## Memperbarui Instalasi
+
+Untuk memperbarui ILDIS yang sudah terpasang ke versi terbaru:
 
 <Code code={`./install.sh --update`} lang="shell" />
 
-<Aside type="note">
-  Script ini akan menarik image Docker yang dibutuhkan, mengkonfigurasi container, dan menjalankan ILDIS secara otomatis.
-</Aside>
+Script akan menyimpan backup konfigurasi Anda, menarik image terbaru, dan menjalankan migrasi database secara otomatis.
+
+---
+
+## Opsi Lanjutan
+
+Script instalasi mendukung berbagai opsi untuk kustomisasi:
+
+| Opsi | Keterangan |
+|------|-----------|
+| `--dir /path` | Tentukan direktori instalasi |
+| `--db-type mariadb\|mysql\|external` | Pilih tipe database |
+| `--reverse-proxy` | ILDIS di belakang reverse proxy |
+| `--ssl-mode none\|letsencrypt\|manual` | Mode SSL/TLS |
+| `--ssl-domain example.com` | Domain untuk SSL |
+| `--ssl-email user@example.com` | Email untuk Let's Encrypt |
+| `--admin-username admin` | Username superadmin |
+| `--admin-password secret` | Password superadmin |
+| `--db-port 3306` | Ekspos port database ke host |
+
+Jalankan `./install.sh --help` untuk melihat semua opsi yang tersedia.
+
+---
+
+## Bantuan dan Dukungan
+
+Jika Anda mengalami masalah selama instalasi:
+
+- Periksa log container: `docker compose -f /opt/ildis/docker-compose.yml logs`
+- Hubungi tim IT di **it.dev@bphn.go.id** untuk bantuan teknis
+- Lihat [Langkah Setelah Instalasi](/v4/instalasi/setelah-instalasi) untuk konfigurasi tambahan
 
 ---
 
 ## Langkah Selanjutnya
 
-Setelah instalasi berhasil, lanjutkan ke halaman berikut untuk konfigurasi awal:
+Setelah instalasi berhasil, lanjutkan ke halaman berikut untuk konfigurasi tambahan:
 
 - [Langkah Setelah Instalasi](/v4/instalasi/setelah-instalasi)
