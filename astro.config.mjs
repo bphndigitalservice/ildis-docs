@@ -169,11 +169,21 @@ export default defineConfig({
                     {
                         label: 'Instalasi & Konfigurasi',
                         items: [
-                            {label: 'Instalasi', link: '/v4/instalasi'},
+                            {
+                                label: 'Instalasi',
+                                items: [
+                                    {label: 'Pilih Metode', link: '/v4/instalasi'},
+                                    {label: 'Pasang Cepat', link: '/v4/instalasi/pasang-cepat'},
+                                    {label: 'Vagrant', link: '/v4/instalasi/vagrant'},
+                                    {label: 'Manual — Linux/macOS', link: '/v4/instalasi/manual-linux'},
+                                    {label: 'Manual — Windows', link: '/v4/instalasi/manual-windows'},
+                                    {label: 'Setelah Instalasi', link: '/v4/instalasi/setelah-instalasi'},
+                                ],
+                            },
                             {label: 'Struktur Direktori', link: '/v4/struktur-direktori'},
                             {label: 'Deployment', link: '/v4/deployment'},
                             {label: 'Konfigurasi', link: '/v4/konfigurasi'},
-                        ]
+                        ],
                     },
                     {
                         label: 'Upgrade',

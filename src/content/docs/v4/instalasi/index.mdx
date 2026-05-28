@@ -1,0 +1,32 @@
+---
+title: Instalasi ILDIS
+description: Pilih metode instalasi ILDIS yang sesuai dengan kebutuhan Anda.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+<Aside type="tip">
+  Pastikan pada perangkat Anda telah terpasang Git, PHP, dan Composer.
+  Lihat [Persyaratan Sistem](/v4/persyaratan-sistem) untuk detail lengkap.
+</Aside>
+
+Pilih salah satu metode instalasi di bawah ini:
+
+<CardGrid>
+  <Card title="Pasang Cepat" icon="rocket">
+    **Direkomendasikan.** Script otomatis dengan Docker/Podman. Termasuk update dan mode non-interactive.
+    
+    [Mulai Pasang Cepat](/v4/instalasi/pasang-cepat)
+  </Card>
+  <Card title="Vagrant" icon="laptop">
+    **Development.** Virtual machine dengan semua dependensi terkonfigurasi. Tidak disarankan untuk production.
+    
+    [Mulai dengan Vagrant](/v4/instalasi/vagrant)
+  </Card>
+  <Card title="Manual" icon="setting">
+    **Linux / macOS / Windows.** Konfigurasi lengkap pada server Anda sendiri.
+    
+    [Linux & macOS](/v4/instalasi/manual-linux) &middot; [Windows](/v4/instalasi/manual-windows)
+  </Card>
+</CardGrid>
