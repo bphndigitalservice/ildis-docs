@@ -11,14 +11,19 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
-    "@astrojs/starlight": "^0.34.3",
+    "@astrojs/starlight": "^0.39.2",
     "@astrojs/vercel": "^10.0.2",
-    "astro": "^6.1.10",
+    "astro": "^6.4.1",
     "sharp": "^0.34.2",
-    "starlight-theme-nova": "^0.7.2"
+    "starlight-theme-nova": "^0.11.11"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.7",
     "typescript": "^5.9.3"
+  },
+  "pnpm": {
+    "overrides": {
+      "@astrojs/mdx": "6.0.1"
+    }
   }
 }

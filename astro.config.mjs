@@ -206,7 +206,7 @@ export default defineConfig({
                     },
                     {
                         label: 'Troubleshooting',
-                        autogenerate: {directory: 'v4/troubleshooting/', collapsed: true},
+                        items: [{autogenerate: {directory: 'v4/troubleshooting/', collapsed: true}}],
                     },
                     {
                         label: 'Kontribusi',
