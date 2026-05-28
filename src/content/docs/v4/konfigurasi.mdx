@@ -1,7 +1,11 @@
 ---
 title: Konfigurasi
-description: Penjelasan terkait konfigurasi yang terdapat pada ILDIS v4
+description: 'Penjelasan lengkap konfigurasi environment variable dan pengaturan ILDIS v4'
 ---
+
+import { Aside } from '@astrojs/starlight/components';
+import { Code } from '@astrojs/starlight/components';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Item Konfigurasi
 
@@ -17,13 +21,48 @@ description: Penjelasan terkait konfigurasi yang terdapat pada ILDIS v4
 | `PUBLIC_DOMAIN`              | Domain publik atau URL frontend aplikasi ILDIS. |
 | `COOKIE_VALIDATION_KEY_BE`  | Kunci validasi cookie untuk aplikasi backend. Digunakan untuk memastikan integritas data cookie. |
 | `COOKIE_VALIDATION_KEY_FE`  | Kunci validasi cookie untuk aplikasi frontend. Harus unik dan tidak boleh kosong. |
+| `RECAPTCHA_ENABLED`         | Aktifkan (`true`) atau nonaktifkan (`false`) Google reCAPTCHA pada halaman login backend. |
 | `RECAPTCHA_SITE_KEY`        | Kunci publik Google reCAPTCHA untuk menampilkan widget keamanan. |
 | `RECAPTCHA_SECRET_KEY`      | Kunci rahasia Google reCAPTCHA untuk proses verifikasi di sisi server. |
 
-## Generate Cookie Validation Key
+---
 
-Coming soon
+## Cookie Validation Key
 
-## Google Recaptcha
+`COOKIE_VALIDATION_KEY_BE` dan `COOKIE_VALIDATION_KEY_FE` adalah kunci yang digunakan oleh Yii2 untuk memvalidasi integritas cookie. Kedua kunci ini **wajib diisi** agar mekanisme keamanan session dapat berjalan dengan benar.
 
-Coming Soon
+Jika kunci ini kosong, aplikasi akan menampilkan error dan tidak dapat berjalan.
+
+### Generate Cookie Validation Key
+
+Untuk generate kunci secara otomatis, jalankan perintah berikut:
+
+export const generateKey = `bash <(curl -s https://raw.githubusercontent.com/bphndigitalservice/ildis-helper-scripts/refs/heads/main/generate_cookie_keys.sh)`;
+export const generateKeyPowershell = `$phpScript = Invoke-RestMethod -Uri "https://raw.githubusercontent.com/bphndigitalservice/ildis-helper-scripts/refs/heads/main/generate_cookie_keys.php"\nphp -r $phpScript`;
+
+<Tabs>
+  <TabItem label="Linux / macOS">
+    <Code code={generateKey} title="Terminal" lang="shell" />
+  </TabItem>
+  <TabItem label="Windows">
+    <Code code={generateKeyPowershell} title="Windows PowerShell" lang="powershell" />
+  </TabItem>
+</Tabs>
+
+<Aside type="note">
+  Jika Anda menggunakan metode Pasang Cepat (One-Click Install), cookie validation key sudah dibuat secara otomatis oleh script instalasi. Anda hanya perlu melakukan ini pada instalasi manual.
+</Aside>
+
+---
+
+## Google reCAPTCHA
+
+Google reCAPTCHA v3 membantu melindungi ILDIS dari bot tanpa interaksi pengguna pada halaman Login Admin (backend). Konfigurasi reCAPTCHA dilakukan melalui tiga environment variable:
+
+- **`RECAPTCHA_ENABLED`** — Set `true` untuk mengaktifkan, `false` untuk menonaktifkan. Untuk instalasi lokal/development, sebaiknya set ke `false`.
+- **`RECAPTCHA_SITE_KEY`** — Kunci publik yang didapatkan dari Google reCAPTCHA admin console.
+- **`RECAPTCHA_SECRET_KEY`** — Kunci rahasia untuk verifikasi di sisi server.
+
+### Langkah-langkah Mendapatkan reCAPTCHA Key
+
+Untuk panduan lengkap cara mendapatkan Site Key dan Secret Key dari Google, lihat halaman [Langkah Setelah Instalasi](/v4/instalasi/setelah-instalasi#google-recaptcha-key).

@@ -1,4 +1,107 @@
 ---
 title: Kustomisasi
-description: Kustomisasi
+description: 'Panduan kustomisasi tampilan, tema, dan konfigurasi ILDIS'
 ---
+
+import { Aside } from '@astrojs/starlight/components';
+import { Code } from '@astrojs/starlight/components';
+
+ILDIS dibangun menggunakan Yii2 Framework dan dapat dikustomisasi sesuai kebutuhan instansi Anda. Halaman ini menjelaskan aspek-aspek utama yang dapat disesuaikan.
+
+<Aside type="note">
+  Sebelum melakukan kustomisasi, pastikan Anda sudah memahami [struktur direktori](/v4/struktur-direktori) ILDIS dan memiliki backup dari file yang akan diubah.
+</Aside>
+
+---
+
+## Branding & Tampilan
+
+### Mengubah Nama Aplikasi
+
+Nama aplikasi yang ditampilkan di halaman frontend dan backend dapat diubah melalui file `.env`:
+
+```
+APP_NAME=Nama Instansi Anda
+```
+
+### Mengubah Logo
+
+1. Siapkan file logo Anda dalam format PNG atau SVG (disarankan ukuran maksimal 200x50 px)
+2. Ganti file logo di lokasi berikut:
+   - **Frontend**: `frontend/web/images/`
+   - **Backend**: `backend/web/images/`
+3. Sesuaikan referensi logo di file layout jika nama file berubah
+
+### Mengubah Warna Tema
+
+Warna tema frontend dan backend dikonfigurasi melalui CSS. File utama yang perlu diubah:
+
+- **Frontend**: `frontend/web/css/style.css`
+- **Backend**: `backend/web/css/style.css`
+
+Cari variabel warna utama (biasanya didefinisikan di bagian atas file) dan sesuaikan dengan warna instansi Anda.
+
+---
+
+## Konfigurasi Environment
+
+Konfigurasi utama ILDIS dikendalikan melalui file `.env`. Untuk daftar lengkap variabel dan penjelasannya, lihat halaman [Konfigurasi](/v4/konfigurasi).
+
+Beberapa konfigurasi yang sering dikustomisasi:
+
+| Variabel | Kegunaan | Nilai Default |
+|----------|----------|---------------|
+| `APP_NAME` | Nama aplikasi | `ILDIS` |
+| `PUBLIC_DOMAIN` | URL publik aplikasi | `http://localhost:8080` |
+| `RECAPTCHA_ENABLED` | Aktifkan reCAPTCHA di login backend | `false` |
+| `YII_ENV` | Lingkungan aplikasi | `prod` |
+| `YII_DEBUG` | Mode debug | `false` |
+
+---
+
+## Menambah Halaman Baru
+
+ILDIS menggunakan arsitektur MVC Yii2. Untuk menambah halaman baru:
+
+1. Buat controller baru di `frontend/controllers/` atau `backend/controllers/`
+2. Buat view file di `frontend/views/[controller]/` atau `backend/views/[controller]/`
+3. Tambahkan rule URL di file konfigurasi (`frontend/config/main.php` atau `backend/config/main.php`)
+
+<Aside type="caution">
+  Kustomisasi yang melibatkan perubahan kode PHP memerlukan pemahaman tentang Yii2 Framework. Perubahan yang tidak sesuai dapat menyebabkan aplikasi tidak berfungsi.
+</Aside>
+
+---
+
+## Theme & Layout
+
+### Frontend
+
+Layout frontend berada di:
+- `frontend/views/layouts/main.php` — Layout utama
+- `frontend/views/site/` — Halaman-halaman utama (home, about, contact)
+
+### Backend (Admin)
+
+Layout backend berada di:
+- `backend/views/layouts/main.php` — Layout utama admin
+- `backend/views/site/login.php` — Halaman login
+
+---
+
+## Kustomisasi Melalui Docker (Metode Pasang Cepat)
+
+Jika Anda menggunakan metode Pasang Cepat, beberapa kustomisasi dapat dilakukan tanpa mengubah kode:
+
+- **Port aplikasi**: Ubah `PORT` di file `.env`
+- **Domain publik**: Ubah `PUBLIC_DOMAIN` di file `.env`
+- **SSL/TLS**: Jalankan ulang `./install.sh` dengan opsi `--ssl-mode`
+- **Database**: Pilih MariaDB, MySQL, atau database eksternal saat instalasi
+
+Untuk kustomisasi yang lebih mendalam, Anda perlu membuat volume mount ke file yang ingin diubah atau membangun image Docker sendiri.
+
+---
+
+## Bantuan
+
+Untuk bantuan teknis terkait kustomisasi, hubungi **it.dev@bphn.go.id**.

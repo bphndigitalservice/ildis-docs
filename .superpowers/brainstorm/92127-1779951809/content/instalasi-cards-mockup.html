@@ -1,0 +1,75 @@
+<h2>Mockup: Card-Based Method Selection</h2>
+<p class="subtitle">Pilih metode instalasi ILDIS yang paling sesuai dengan kebutuhan Anda</p>
+
+<div class="options" data-multiselect="false">
+  <div class="option" data-choice="one-click" onclick="toggleSelect(this)">
+    <div class="letter">1</div>
+    <div class="content">
+      <h3>Pasang Cepat (One-Click)</h3>
+      <p>Instalasi tercepat dengan script otomatis. Memerlukan Docker/Podman.</p>
+      <div style="margin-top:0.5rem;font-size:0.8rem;color:var(--sl-color-green)">
+        <span style="background:rgba(34,197,94,0.15);padding:0.15rem 0.5rem;border-radius:999px;">Direkomendasikan</span>
+      </div>
+    </div>
+  </div>
+  <div class="option" data-choice="docker" onclick="toggleSelect(this)">
+    <div class="letter">2</div>
+    <div class="content">
+      <h3>Docker</h3>
+      <p>Container dengan image GHCR atau build dari source. Baik untuk production dan development.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="vagrant" onclick="toggleSelect(this)">
+    <div class="letter">3</div>
+    <div class="content">
+      <h3>Vagrant</h3>
+      <p>Virtual machine untuk development. Termasuk semua dependensi terkonfigurasi.</p>
+      <div style="margin-top:0.5rem;font-size:0.8rem;color:var(--sl-color-orange)">
+        <span style="background:rgba(249,115,22,0.15);padding:0.15rem 0.5rem;border-radius:999px;">Hanya Development</span>
+      </div>
+    </div>
+  </div>
+  <div class="option" data-choice="manual" onclick="toggleSelect(this)">
+    <div class="letter">4</div>
+    <div class="content">
+      <h3>Manual</h3>
+      <p>Konfigurasi lengkap pada server Anda sendiri. Linux/macOS (LAMP/LEMP) dan Windows (XAMPP).</p>
+      <div style="margin-top:0.5rem;font-size:0.8rem;color:var(--sl-color-blue)">
+        <span style="background:rgba(59,130,246,0.15);padding:0.15rem 0.5rem;border-radius:999px;">Linux/macOS/Windows</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:2rem">
+  <h3>Setelah Instalasi (After Installation Steps)</h3>
+  <p class="subtitle" style="margin-bottom:1rem">Setiap metode instalasi akan diikuti langkah-langkah post-installation:</p>
+
+  <div style="display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))">
+    <div style="border:1px solid rgba(0,0,0,0.1);border-radius:8px;padding:1rem;background:rgba(255,255,255,0.03)">
+      <div class="label">STEP 1</div>
+      <h4>Konfigurasi Environment (.env)</h4>
+      <p style="font-size:0.85rem;opacity:0.8">Salin dan sesuaikan file .env dengan database dan kredensial Anda.</p>
+    </div>
+    <div style="border:1px solid rgba(0,0,0,0.1);border-radius:8px;padding:1rem;background:rgba(255,255,255,0.03)">
+      <div class="label">STEP 2</div>
+      <h4>Import Database</h4>
+      <p style="font-size:0.85rem;opacity:0.8">Import skema database awal untuk menjalankan aplikasi.</p>
+    </div>
+    <div style="border:1px solid rgba(0,0,0,0.1);border-radius:8px;padding:1rem;background:rgba(255,255,255,0.03)">
+      <div class="label">STEP 3</div>
+      <h4>Konfigurasi Security</h4>
+      <p style="font-size:0.85rem;opacity:0.8">Generate Cookie Validation Key untuk keamanan session.</p>
+    </div>
+    <div style="border:1px solid rgba(0,0,0,0.1);border-radius:8px;padding:1rem;background:rgba(255,255,255,0.03)">
+      <div class="label">STEP 4</div>
+      <h4>Buat User Admin</h4>
+      <p style="font-size:0.85rem;opacity:0.8">Buat user awal untuk akses backend menggunakan CLI.</p>
+    </div>
+    <div style="border:1px solid rgba(0,0,0,0.1);border-radius:8px;padding:1rem;background:rgba(255,255,255,0.03)">
+      <div class="label">STEP 5</div>
+      <h4>reCAPTCHA (Opsional)</h4>
+      <p style="font-size:0.85rem;opacity:0.8">Konfigurasi Google reCAPTCHA v3 untuk halaman login admin.</p>
+    </div>
+  </div>
+</div>

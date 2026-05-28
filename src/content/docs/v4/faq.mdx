@@ -1,4 +1,142 @@
 ---
 title: FAQ
-description: FAQ
+description: 'Pertanyaan yang sering diajukan tentang ILDIS'
 ---
+
+import { Aside } from '@astrojs/starlight/components';
+import { Code } from '@astrojs/starlight/components';
+
+Pertanyaan yang sering diajukan tentang instalasi, konfigurasi, dan penggunaan ILDIS.
+
+---
+
+## Instalasi
+
+### Port 8080 sudah digunakan, bagaimana menggantinya?
+
+Anda dapat mengubah port dengan dua cara:
+
+- **Metode Pasang Cepat**: Jalankan ulang script instalasi dan masukkan port yang diinginkan saat diminta, atau set variabel `PORT=8081` saat instalasi non-interaktif.
+- **Instalasi Manual**: Ubah konfigurasi virtual host di Nginx/Apache.
+
+<Code code={`PORT=8081 curl -fsSL https://raw.githubusercontent.com/bphndigitalservice/ildis/main/install.sh | bash -s -- --non-interactive`} lang="shell" />
+
+### Saya mendapatkan error "Docker permission denied"
+
+Tambahkan user Anda ke grup Docker:
+
+<Code code={`sudo usermod -aG docker $USER\nnewgrp docker`} lang="shell" />
+
+Kemudian jalankan ulang perintah instalasi. Jika masih gagal, restart terminal atau logout/login kembali.
+
+### Saya mendapatkan error pada saat instalasi, apa yang harus dilakukan?
+
+Periksa log container untuk melihat detail error:
+
+<Code code={`docker compose -f /opt/ildis/docker-compose.yml logs`} lang="shell" />
+
+Untuk instalasi manual, periksa log aplikasi:
+
+<Code code={`tail -f /var/www/ildis/runtime/logs/*.log`} lang="shell" />
+
+Jika masalah berlanjut, hubungi **it.dev@bphn.go.id** untuk bantuan teknis.
+
+---
+
+## Akun & Login
+
+### Bagaimana cara mereset password admin?
+
+Jalankan perintah berikut untuk membuat user admin baru:
+
+- **Docker/Podman**: `docker compose -f /opt/ildis/docker-compose.yml exec app php yii user/create`
+- **Manual**: `php yii user/create` dari direktori proyek ILDIS
+
+Script instalasi Pasang Cepat juga akan meminta Anda membuat akun superadmin saat instalasi.
+
+### Bagaimana cara mengakses halaman backend (admin)?
+
+- **Metode Pasang Cepat**: `http://localhost:8080/backend`
+- **Vagrant**: `http://ildis-backend.test`
+- **Manual (Linux/macOS)**: `http://ildis-backend.test`
+- **Manual (Windows)**: `http://ildis-backend.test` (pastikan hosts file sudah dikonfigurasi)
+
+---
+
+## Konfigurasi
+
+### Bagaimana cara mengaktifkan atau menonaktifkan reCAPTCHA?
+
+Edit file `.env` dan ubah nilai `RECAPTCHA_ENABLED`:
+
+```
+RECAPTCHA_ENABLED=true
+```
+
+Atau untuk menonaktifkan:
+
+```
+RECAPTCHA_ENABLED=false
+```
+
+Setelah mengubah, restart container (metode Docker) atau restart web server (metode manual).
+
+Untuk panduan lengkap mendapatkan Site Key dan Secret Key dari Google, lihat [Langkah Setelah Instalasi](/v4/instalasi/setelah-instalasi#google-recaptcha-key).
+
+### Bagaimana cara mengubah domain ILDIS?
+
+Edit file `.env` dan ubah variabel `PUBLIC_DOMAIN`:
+
+```
+PUBLIC_DOMAIN=https://ildis.example.com
+```
+
+Kemudian restart container atau web server.
+
+---
+
+## Pembaruan
+
+### Bagaimana cara mengupdate ILDIS ke versi terbaru?
+
+- **Metode Pasang Cepat**: Jalankan `./install.sh --update` dari direktori instalasi.
+- **Metode Manual**: `git pull origin main` lalu `composer install --ignore-platform-reqs` lalu `php yii migrate/up --interactive=0`.
+
+Lihat halaman [Upgrade](/v4/upgrade) untuk panduan pembaruan yang lebih detail.
+
+---
+
+## Database
+
+### Bagaimana cara backup database?
+
+<Code code={`mysqldump -u ildis -p ildis_v4 > ildis_v4_backup_$(date +%Y%m%d).sql`} lang="shell" />
+
+Untuk backup otomatis, tambahkan ke cron:
+
+<Code code={`0 2 * * * mysqldump -u ildis -p ildis_v4 | gzip > /backups/ildis_v4_$(date +\%Y\%m\%d).sql.gz`} lang="shell" title="crontab" />
+
+### Koneksi database ditolak, apa yang salah?
+
+Periksa hal berikut:
+1. Pastikan service database berjalan (`systemctl status mysql` atau `docker compose ps`)
+2. Pastikan kredensial di `.env` (`DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_DATABASE`) sesuai dengan konfigurasi database
+3. Pastikan port database tidak diblokir oleh firewall
+
+---
+
+## Lain-lain
+
+### Versi PHP berapa yang dibutuhkan ILDIS?
+
+ILDIS membutuhkan **PHP 8.3 atau lebih baru**. Lihat halaman [Persyaratan Sistem](/v4/persyaratan-sistem) untuk detail lengkap.
+
+### Apakah ILDIS bisa dijalankan tanpa Docker?
+
+Ya, ILDIS dapat dijalankan tanpa Docker menggunakan instalasi manual. Lihat panduan [Manual Linux/macOS](/v4/instalasi/manual-linux) atau [Manual Windows](/v4/instalasi/manual-windows).
+
+### Di mana saya bisa mendapatkan bantuan lebih lanjut?
+
+- **Email**: it.dev@bphn.go.id
+- **GitHub Discussion**: [bphndigitalservice/ildis/discussions](https://github.com/bphndigitalservice/ildis/discussions)
+- Lihat halaman [Dukungan & Komunitas](/v4/dukungan-komunitas)

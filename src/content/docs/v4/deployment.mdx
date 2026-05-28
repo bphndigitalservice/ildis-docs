@@ -1,27 +1,153 @@
 ---
 title: Deployment
-description: Deployment
+description: 'Panduan deployment ILDIS ke lingkungan production'
 ---
 
-import {Code} from "@astrojs/starlight/components";
+import { Aside } from '@astrojs/starlight/components';
+import { Code } from '@astrojs/starlight/components';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 import nginx from 'config_example/nginx.conf?raw';
 import apache from 'config_example/apache.conf?raw';
 
-### Nginx
+Halaman ini menjelaskan langkah-langkah dan pertimbangan untuk men-deploy ILDIS ke lingkungan **production**. Jika Anda baru menginstal ILDIS, lihat halaman [Instalasi](/v4/instalasi) terlebih dahulu.
 
-<Code code={nginx} lang="nginx" title="nginx" />
-
----
-
-### Apache
-
-<Code code={apache} lang="apache2" title="Apache" />
+<Aside type="note">
+  Jika Anda menggunakan metode Pasang Cepat (One-Click Install), sebagian besar konfigurasi production (SSL, reverse proxy, database) sudah ditangani oleh script instalasi. Halaman ini lebih relevan untuk instalasi manual.
+</Aside>
 
 ---
 
-### cPanel
+## Environment Production
 
-coming soon
+Pastikan environment variable berikut dikonfigurasi dengan benar untuk production:
+
+| Variabel | Nilai Production | Keterangan |
+|----------|-----------------|-----------|
+| `YII_ENV` | `prod` | Menonaktifkan debug mode |
+| `YII_DEBUG` | `false` | Menyembunyikan error detail dari pengguna |
+| `DB_HOST` | Host database | Bukan `localhost` jika database terpisah |
+| `DB_PASSWORD` | Password kuat | Gunakan password yang aman dan unik |
+
+<Aside type="caution">
+  Jangan pernah menjalankan ILDIS dengan `YII_DEBUG=true` di production. Ini akan menampilkan informasi sensitif ke pengguna.
+</Aside>
 
 ---
 
+## Reverse Proxy
+
+ILDIS dapat dijalankan di belakang reverse proxy (Nginx, Apache, atau Traefik). Berikut contoh konfigurasi untuk masing-masing:
+
+<Tabs>
+  <TabItem label="Nginx">
+    <Code code={nginx} lang="nginx" title="/etc/nginx/sites-available/ildis" />
+
+    Aktifkan konfigurasi:
+
+    <Code code={`sudo ln -s /etc/nginx/sites-available/ildis /etc/nginx/sites-enabled/\nsudo nginx -t\nsudo systemctl reload nginx`} lang="shell" />
+  </TabItem>
+  <TabItem label="Apache">
+    <Code code={apache} lang="apache" title="/etc/apache2/sites-available/ildis.conf" />
+
+    Aktifkan konfigurasi:
+
+    <Code code={`sudo a2ensite ildis\nsudo apache2ctl configtest\nsudo systemctl reload apache2`} lang="shell" />
+  </TabItem>
+  <TabItem label="Traefik (Docker)">
+    Jika Anda menggunakan metode Pasang Cepat dan memilih **tanpa reverse proxy**, script instalasi akan menyiapkan Traefik secara otomatis.
+
+    Untuk konfigurasi manual, lihat file `traefik/traefik.yml` dan `traefik/config.yml` yang dibuat oleh script instalasi.
+  </TabItem>
+</Tabs>
+
+---
+
+## SSL/TLS
+
+### Let's Encrypt (Direkomendasikan)
+
+Jika server Anda memiliki domain publik, gunakan Let's Encrypt untuk sertifikat SSL gratis:
+
+- **Metode Pasang Cepat**: Pilih opsi SSL "Let's Encrypt" saat instalasi interaktif. Script akan mengkonfigurasi Traefik secara otomatis.
+- **Metode Manual**: Gunakan [Certbot](https://certbot.eff.org/) dengan Nginx atau Apache.
+
+<Code code={`sudo certbot --nginx -d ildis.example.com`} lang="shell" />
+
+### Sertifikat Manual
+
+Jika Anda memiliki sertifikat SSL sendiri:
+
+- **Metode Pasang Cepat**: Pilih opsi SSL "Manual" dan masukkan path ke sertifikat dan kunci privat Anda.
+- **Metode Manual**: Konfigurasi sertifikat langsung di virtual host Nginx atau Apache.
+
+---
+
+## Database Backup & Restore
+
+### Backup
+
+Buat backup database secara berkala menggunakan `mysqldump`:
+
+<Code code={`mysqldump -u ildis -p ildis_v4 > ildis_v4_backup_$(date +%Y%m%d).sql`} lang="shell" />
+
+Untuk backup otomatis, tambahkan ke cron:
+
+<Code code={`0 2 * * * mysqldump -u ildis -p ildis_v4 | gzip > /backups/ildis_v4_$(date +\%Y\%m\%d).sql.gz`} lang="shell" title="crontab" />
+
+### Restore
+
+Untuk mengembalikan database dari backup:
+
+<Code code={`gunzip < /backups/ildis_v4_20250101.sql.gz | mysql -u ildis -p ildis_v4`} lang="shell" />
+
+<Aside type="caution">
+  Restore akan mengganti seluruh database. Pastikan Anda memiliki backup yang valid sebelum melakukan restore.
+</Aside>
+
+---
+
+## Memperbarui ILDIS di Production
+
+### Metode Pasang Cepat (Docker/Podman)
+
+Jika Anda menginstal ILDIS menggunakan script Pasang Cepat:
+
+<Code code={`./install.sh --update`} lang="shell" />
+
+Script akan:
+1. Membuat backup konfigurasi `.env` dan `docker-compose.yml`
+2. Menarik image terbaru dari GitHub Container Registry
+3. Menjalankan migrasi database (`php yii migrate/up`)
+4. Memulai ulang container
+
+### Metode Manual
+
+Untuk instalasi manual di production:
+
+<Code code={`cd /var/www/ildis\ngit pull origin main\ncomposer install --ignore-platform-reqs\nphp yii migrate/up --interactive=0`} lang="shell" />
+
+---
+
+## Security Checklist
+
+Sebelum men-deploy ILDIS ke production, pastikan item berikut sudah dikonfigurasi:
+
+- [ ] `YII_ENV=prod` dan `YII_DEBUG=false` di `.env`
+- [ ] `COOKIE_VALIDATION_KEY_BE` dan `COOKIE_VALIDATION_KEY_FE` diisi dengan kunci yang kuat
+- [ ] `RECAPTCHA_ENABLED=true` pada halaman login backend (opsional tapi direkomendasikan)
+- [ ] SSL/TLS diaktifkan (Let's Encrypt atau sertifikat manual)
+- [ ] File `.env` tidak dapat diakses publik (tidak terexpose oleh web server)
+- [ ] Database menggunakan password yang kuat
+- [ ] Port database tidak diekspos ke publik kecuali diperlukan
+- [ ] Backup database dijadwalkan secara berkala
+- [ ] Log rotation dikonfigurasi untuk mencegah disk penuh
+
+---
+
+## Bantuan dan Dukungan
+
+Jika Anda mengalami masalah saat deployment:
+
+- Periksa log container: `docker compose -f /opt/ildis/docker-compose.yml logs` (metode Docker)
+- Periksa log aplikasi: `tail -f /var/www/ildis/runtime/logs/*.log` (metode manual)
+- Hubungi tim IT di **it.dev@bphn.go.id**

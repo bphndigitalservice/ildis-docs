@@ -1,6 +1,100 @@
 ---
 title: Kontribusi
-description: Kontribusi
+description: 'Panduan berkontribusi pada pengembangan ILDIS'
 ---
 
-Coming Soon
+import { Aside } from '@astrojs/starlight/components';
+import { Code } from '@astrojs/starlight/components';
+
+Kami menyambut kontribusi dari siapa saja, baik anggota JDIHN maupun komunitas pengembang. Halaman ini menjelaskan cara berkontribusi pada pengembangan ILDIS.
+
+---
+
+## Melaporkan Bug
+
+Jika Anda menemukan bug atau masalah, silakan buat issue di GitHub: [Buka Issue Baru](https://github.com/bphndigitalservice/ildis/issues/new)
+
+Sertakan informasi berikut dalam laporan Anda:
+
+- **Versi ILDIS** yang digunakan (lihat di halaman backend atau file `VERSION`)
+- **Langkah reproduksi** — langkah-langkah untuk mereproduksi masalah
+- **Perilaku yang diharapkan** vs **perilaku aktual**
+- **Screenshot atau log** jika tersedia
+- **Lingkungan** — OS, versi PHP, versi Docker (jika menggunakan)
+
+---
+
+## Setup Development
+
+Untuk berkontribusi pada kode, ikuti langkah-langkah berikut:
+
+### 1. Fork & Clone
+
+Fork repositori ILDIS ke akun GitHub Anda, lalu clone:
+
+<Code code={`git clone https://github.com/<username>/ildis.git\ncd ildis`} lang="shell" />
+
+### 2. Install Dependensi
+
+<Code code={`composer install --ignore-platform-reqs\nphp init`} lang="shell" />
+
+### 3. Konfigurasi Environment
+
+<Code code={`cp .env.example .env`} lang="shell" />
+
+Edit file `.env` sesuai dengan konfigurasi lokal Anda. Pastikan Anda memiliki database MySQL/MariaDB yang berjalan.
+
+### 4. Buat Branch
+
+<Code code={`git checkout -b fitur-baru`} lang="shell" />
+
+### 5. Jalankan Migrasi
+
+<Code code={`php yii migrate/up --interactive=0`} lang="shell" />
+
+---
+
+## Alur Kerja Kontribusi
+
+1. **Fork** repositori ke akun GitHub Anda
+2. **Buat branch** dari `main` untuk setiap fitur atau perbaikan
+3. **Commit** perubahan dengan pesan yang jelas dan deskriptif
+4. **Push** branch ke fork Anda
+5. **Buat Pull Request** ke repositori utama
+
+### Konvensi Branch
+
+- `fitur/nama-fitur` — untuk fitur baru
+- `fix/nama-fix` — untuk perbaikan bug
+- `docs/nama-perubahan` — untuk perubahan dokumentasi
+
+### Konvensi Commit
+
+Gunakan format pesan commit yang jelas:
+
+<Code code={`feat: menambahkan fitur export PDF\nfix: memperbaiki error pada halaman login\ndocs: memperbarui panduan instalasi`} lang="shell" />
+
+---
+
+## Standar Kode
+
+ILDIS mengikuti standar kode berikut:
+
+- **PSR-12** — Standar gaya kode PHP
+- **Yii2 Convention** — Mengikuti konvensi penamaan dan struktur Yii2 Framework
+- **Indonesian Language** — Komentar dan pesan error dalam Bahasa Indonesia
+
+Pastikan kode Anda:
+
+- Mengikuti PSR-12 (gunakan `phpcs` untuk pengecekan otomatis)
+- Menambahkan komentar pada method dan class yang kompleks
+- Menulis unit test untuk fitur baru (jika memungkinkan)
+
+---
+
+## Bantuan
+
+Untuk pertanyaan teknis atau diskusi pengembangan, hubungi:
+
+- **Email**: it.dev@bphn.go.id
+- **GitHub Discussion**: [bphndigitalservice/ildis/discussions](https://github.com/bphndigitalservice/ildis/discussions)

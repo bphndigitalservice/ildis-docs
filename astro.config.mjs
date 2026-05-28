@@ -217,7 +217,7 @@ export default defineConfig({
                         link: '/v4/dukungan-komunitas',
                     },
                     {
-                        label: 'Aplikasi Alternative',
+                        label: 'Aplikasi Alternatif',
                         link: '/v4/alternative',
                     }
                 ],
