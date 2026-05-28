@@ -17,14 +17,12 @@ Instalasi manual ini cocok untuk lingkungan **production** pada sistem operasi U
 
 ## 1. Instalasi Prasyarat
 
-export const installPrerequisitesUbuntu = `sudo add-apt-repository ppa:ondrej/php -y \nsudo apt-get update\nsudo apt install -y php7.4 php7.4-cli php7.4-common php7.4-curl php7.4-mbstring php7.4-intl php7.4-mysql php7.4-xml php7.4-fpm php7.4-gd php7.4-zip php7.4-xdebug unzip nginx mysql-server`;
-export const installPrerequisitesMac = `brew tap shivammathur/php\nbrew install php@7.4 mysql nginx git composer`;
+export const installPrerequisitesUbuntu = `sudo add-apt-repository ppa:ondrej/php -y \nsudo apt-get update\nsudo apt install -y php8.3 php8.3-cli php8.3-common php8.3-curl php8.3-mbstring php8.3-intl php8.3-mysql php8.3-xml php8.3-fpm php8.3-gd php8.3-zip php8.3-xdebug unzip nginx mysql-server`;
+export const installPrerequisitesMac = `brew install php mysql nginx git composer`;
 
 <Tabs>
   <TabItem label="macOS (Homebrew)">
     <Code code={installPrerequisitesMac} lang="shell" />
-    Setelah itu, tambahkan PHP 7.4 ke PATH:
-    <Code code={`echo 'export PATH="/opt/homebrew/opt/php@7.4/bin:$PATH"' >> ~/.zshrc\nsource ~/.zshrc`} lang="shell" />
   </TabItem>
   <TabItem label="Ubuntu">
     <Code code={installPrerequisitesUbuntu} lang="shell" />
@@ -34,7 +32,7 @@ export const installPrerequisitesMac = `brew tap shivammathur/php\nbrew install 
 
 ## 2. Unduh dan Pasang ILDIS
 
-export const cloneCommandLinuxMac = `cd /var/www\ngit clone https://github.com/bphndigitalservice/ildis.git\ncomposer install --ignore-platform-reqs\nphp init`;
+export const cloneCommandLinuxMac = `cd /var/www\ngit clone https://github.com/bphndigitalservice/ildis.git\ncomposer install\nphp init`;
 
 <Code code={cloneCommandLinuxMac} lang="shell" />
 
