@@ -46,9 +46,15 @@ Edit file `.env`:
 
 <Code code={databaseConfiguration} lang="env" title=".env" />
 
-## 4. Import Database
+## 4. Migrasi Database
 
-<Code code={`mysql -u root -p ildis_v4 < DATABASE/ildis_v4.sql`} lang="shell" />
+Buat database terlebih dahulu:
+
+<Code code={`mysql -u root -p -e "CREATE DATABASE ildis_v4;"`} lang="shell" />
+
+Lalu jalankan migrasi:
+
+<Code code={`php yii migrate`} lang="shell" />
 
 ## 5. Konfigurasi Web Server
 

@@ -35,11 +35,15 @@ Atau ekstrak file rilis dari [GitHub Releases](https://github.com/bphndigitalser
 
 Edit file `.env` dan sesuaikan nilai dengan kredensial MySQL / MariaDB Anda.
 
-## 5. Import Database
+## 5. Migrasi Database
 
-<Code code={`mysql -u root -p ildis_v4 < DATABASE/ildis_v4.sql`} lang="powershell" />
+Buat database terlebih dahulu. Buka MySQL command line atau gunakan phpMyAdmin:
 
-Atau gunakan phpMyAdmin untuk import manual.
+<Code code={`mysql -u root -e "CREATE DATABASE ildis_v4;"`} lang="powershell" />
+
+Lalu jalankan migrasi:
+
+<Code code={`php yii migrate`} lang="powershell" />
 
 ## 6. Buat Virtual Host
 

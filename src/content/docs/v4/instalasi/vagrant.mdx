@@ -66,11 +66,11 @@ Lalu buat database dengan perintah berikut:
 
 <Code code={`create database ildis_v4; //tekan enter\nexit;`} lang="shell" title="mysql"/>
 
-Selanjutnya Anda dapat melakukan migrasi database dengan perintah berikut:
+Selanjutnya jalankan migrasi database dengan perintah berikut:
 
-export const migrateDatabase = `mysql -u root ildis_v4 < /app/DATABASE/ildis_v4.sql`;
+export const phpMigrate = `php yii migrate`;
 
-<Code code={migrateDatabase} lang="shell" title="vagrant@ildis4:~"/>
+<Code code={phpMigrate} lang="shell" title="vagrant@ildis4:~"/>
 
 Jika semua berjalan dengan baik maka Anda dapat mengakses laman ILDIS pada:
 - http://ildis-frontend.test (untuk frontend)
